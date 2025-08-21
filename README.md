@@ -125,5 +125,5 @@ fields:
     description: entity_id
 mode: single
 ```
-Conclusion: In result is simple but sometimes good examples are hard to find so in my case I struggled to find the correct syntax for the template with (hold-)action combination in the auto-enties card. Still a noob in this respect but in the end I was successful after a lot of trial and errors. 
+Conclusion: In the end the result is simple but sometimes good examples are hard to find so in this case I struggled to find the correct syntax for the template with (hold-)action combination in the auto-enties card. Still a noob in this respect but in the end I was successful after a lot of trial and errors. 
 
