@@ -1,5 +1,5 @@
 # Meshcore Contact Management in Home Assistant
-A way to manage your contact when using the Meshcore Intergration. An sorry this was slow-cooked noobisch development in the GUI so it is not a single package:
+A way to manage your contacts when using the Meshcore Intergration. And sorry this was slow-cooked 'noobish' development in the GUI so it is not a single package:
 
 This is a small help to remove your obsolete contacts in Home assistant. It is set up as a visual manual way to manage your contacts. The actual action is in a script. If deseried you can easily use this script in a more automated way to boldly run-though your contacts and delete them if they fit your criteria. How does it look like?
 
