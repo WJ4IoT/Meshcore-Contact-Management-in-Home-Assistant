@@ -1,5 +1,5 @@
 # A noob-way to show Private Messages in the Meshcore Integration
-This method requies an additional integration because so far I know that is the only way to add a label to entities without the (G)UI.
+This method requires an additional integration because so far I know that is the only way to add a label to entities without the (G)UI.
 ## 1. Install integration "Spook 👻 Your homie."
 This integrations gives you the possibility to add labels without using the UI.
 ## 2. Create a label
