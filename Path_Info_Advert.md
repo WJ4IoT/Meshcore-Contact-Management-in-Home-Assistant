@@ -16,8 +16,83 @@ For the selection you need three helper entities:
 - input_text.meshcore_contact
 How to create helper entitiies is beyond the scope of this document.
 
+The cards are (if you do not have mushroom you need to install this from HACS or find an alternative):
+
+1)
+```
+type: horizontal-stack
+cards:
+  - type: custom:mushroom-select-card
+    entity: input_select.meshcore_contact_type
+  - type: custom:mushroom-number-card
+    entity: input_number.meshcore_advert_age
+title: Selection
+```
+2)
+```
+type: entities
+entities:
+  - entity: input_text.meshcore_contact
+    name: entity_id
+title: Containing (leave empty to select everything)
+```
+new card (not in picture)
+```
+type: markdown
+content: >-
+  {% set contains = states['input_text.meshcore_contact'].state %}
+
+  {% set type = states['input_select.meshcore_contact_type'].state[:1] |  int %}
+  {% set days = states['input_number.meshcore_advert_age'].state |  int %} {%
+  set time = now() | as_timestamp | int %} {% set time = time - days*24*60*60
+  %} 
+
+
+  Records in Selection : {{ states.binary_sensor
+    | selectattr('attributes.last_advert', 'defined')
+    | selectattr('attributes.type', 'eq', type )
+    | selectattr('attributes.last_advert','gt', time )
+    | sort(attribute='attributes.last_advert')
+    | selectattr('entity_id', 'search', contains)
+    | list
+    | count 
+    }}
+```
+
 ## 3. result of selection
 This is a markdown card were each result has 4 lines. The first 3 are derived from the original contact identy. The last line comes from an extra entity were the path information of the advert is stored. These records needs to be created which is explained in the next chapter.
+
+```
+type: markdown
+content: >-
+  {% set contains = states['input_text.meshcore_contact'].state %}
+
+  {% set type = states['input_select.meshcore_contact_type'].state[:1] |  int %}
+  {% set days = states['input_number.meshcore_advert_age'].state |  int %} {%
+  set time = now() | as_timestamp | int %} {% set time = time - days*24*60*60 %}
+  {% set DEVICES = states.binary_sensor
+    | selectattr('attributes.last_advert', 'defined')
+    | selectattr('attributes.type', 'eq', type )
+    | selectattr('attributes.last_advert','gt', time )
+    | sort(attribute='attributes.last_advert')
+    | selectattr('entity_id', 'search', contains)
+    | reverse
+
+  %} {% for id in DEVICES %} {% set mac = id.entity_id[-20:-8] %} {% set mac12 =
+  'sensor.meshcore_'~mac~'_hops' %}
+    {{ states[id.entity_id].name }} ({{mac[:4]}})
+    last Advert: {{states[id.entity_id].attributes.last_advert | timestamp_custom('%Y-%m-%d %H:%M')}} ({{ states[id.entity_id].state }})
+    Distance: {{ distance(states[id.entity_id].attributes.adv_lat, states[id.entity_id].attributes.adv_lon) | round(2) }} km
+  {% if states[mac12].state is not defined %} Hops: Not Available
+
+  {% elif states[mac12].attributes.advert is defined %} Hops:
+  {{states[mac12].attributes.hops}} Path: {{states[mac12].attributes.path}}
+  Interval: {{states[mac12].attributes.interval}} uur  
+
+  {% endif %} {% endfor %}
+```
+You might notice this card haves an improved selection to reduce the number of piping.
+
 ## 4 Building your extra records
 When an advert is received this advert will be stored in an additional entity record. Please copy below automation into a new automation. It also use an extra helper timer "timer.meshcore_path_timer" (3 seconds countdown) in an attempt not to overwrite with the next entry. At the moment I am not very successful with hopless path but that is not to annoying.
 ```
