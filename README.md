@@ -1,4 +1,4 @@
-# My Meshcore Home Assistions Solutions
+# My Meshcore Home Assistant Solutions
 
 A collection of (in my view) practical solutions on top of the excellent [Meshcore Integration in Home Assistant](https://github.com/meshcore-dev/meshcore-ha).
 
