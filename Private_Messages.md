@@ -67,3 +67,6 @@ the PM/PB extention was created by me. hope it is useful for you.
 No rocket science overhere.
 
 <img width="619" height="470" alt="image" src="https://github.com/user-attachments/assets/52b521b9-8e91-4968-9a1f-4b8cb9aa7f13" />
+
+## 6. Flaw in the system?
+I notice one flow in this solution or the system; if there no entity with this label the system will show everything.
