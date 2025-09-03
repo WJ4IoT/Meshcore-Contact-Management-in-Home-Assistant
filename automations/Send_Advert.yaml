@@ -1,0 +1,30 @@
+alias: MeshCore - Advert Trigger
+description: Sends a MeshCore advert when desired
+triggers:
+  - trigger: time_pattern
+    hours: "3"
+    minutes: "25"
+    id: TIME
+  - trigger: state
+    entity_id:
+      - sensor.meshcore_696e4b_node_count_wj_domusip
+    not_to:
+      - unavailable
+      - unknown
+    not_from:
+      - unavailable
+      - unknown
+    enabled: false
+conditions:
+  - condition: or
+    conditions:
+      - condition: trigger
+        id:
+          - TIME
+      - condition: template
+        value_template: "{{ trigger.to_state.state|float > trigger.from_state.state|float }}"
+actions:
+  - data:
+      command: send_advert true
+    action: meshcore.execute_command
+mode: single
