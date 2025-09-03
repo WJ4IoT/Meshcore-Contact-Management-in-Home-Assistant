@@ -19,7 +19,7 @@ triggers:
     not_from:
       - unavailable
       - unknown
-    enabled: true
+    enabled: false
 conditions:
   - condition: or
     conditions:
