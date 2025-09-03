@@ -34,41 +34,4 @@ actions:
     action: meshcore.execute_command
 mode: single
 ```
-
-
 (* a change of the number of companions would be better because only this type requires an advert. However I did not want to create an additional template sensor for this).
-
-## Counting Contacts with a markdown card
-This is not really part of this scope, more belongs to "Path_Info_Advert". How can it look like?
-
-<img width="338" height="226" alt="image" src="https://github.com/user-attachments/assets/cd55238b-1d52-42bc-ac66-4c63eed6590d" />
-
-Just copy the following into an empty card:
-
-```
-type: markdown
-content: >-  
-  Total: {{ states.binary_sensor
-    | selectattr('attributes.last_advert', 'defined')
-    | list
-    | count 
-    }}
-  {{ states.binary_sensor
-    | selectattr('attributes.last_advert', 'defined')
-    | selectattr('attributes.type', 'eq', 1 )
-    | list
-    | count 
-    }} Companions
-  {{ states.binary_sensor
-    | selectattr('attributes.last_advert', 'defined')
-    | selectattr('attributes.type', 'eq', 2 )
-    | list
-    | count 
-    }} Repeaters
-  {{ states.binary_sensor
-    | selectattr('attributes.last_advert', 'defined')
-    | selectattr('attributes.type', 'eq', 3 )
-    | list
-    | count 
-    }} Room Servers
-```
