@@ -67,10 +67,10 @@ type: markdown
 content: >-
   {% set contains = states['input_text.meshcore_contact'].state %}
 
-  {% set type = states['input_select.meshcore_contact_type'].state[:1] |  int %}
-  {% set days = states['input_number.meshcore_advert_age'].state |  int %} {%
-  set time = now() | as_timestamp | int %} {% set time = time - days*24*60*60 %}
-  {% set DEVICES = states.binary_sensor
+  {% set type = states['input_select.meshcore_contact_type'].state[:1] |  int(1) %}
+  {% set days = states['input_number.meshcore_advert_age'].state |  int(0) %}  {%
+  set time = now() | as_timestamp | int(0) %} {% set time = time - days*24*60*60
+  %} {% set DEVICES = states.binary_sensor
     | selectattr('attributes.last_advert', 'defined')
     | selectattr('attributes.type', 'eq', type )
     | selectattr('attributes.last_advert','gt', time )
@@ -105,15 +105,16 @@ triggers:
       event_type: EventType.RX_LOG_DATA
 conditions:
   - condition: template
-    value_template: "{{ (trigger.event.data.payload.payload [0:2] | int) * 1  == 11 }}"
+    value_template: "{{ trigger.event.data.payload.payload[0:2] | int(0) == 11 }}"
+    enabled: enable
 actions:
   - variables:
       short: "{{ trigger.event.data.payload.payload }}"
-      hops: "{{ (short[3:4] | int) * 1 | int}}"
+      hops: "{{ short[2:4] | int(0) }}"
       start: "{{ (hops * 2 + 4 | int) }}"
       contact: "{{ short[start:start+12] }}"
       entity: sensor.meshcore_{{ contact }}_hops
-      path: "{% if hops == 0 %} \"NA\" {% else %} {{ short[4:start] }} {% endif %}"
+      path: "{% if hops == 0 %} NA {% else %} {{ short[4:start] }} {% endif %}"
       record: Old
   - if:
       - condition: template
@@ -130,6 +131,9 @@ actions:
       time: "{{ now() | as_timestamp| int }}"
       interval: "{{ (( time - previous ) / 3600 ) | int }}"
   - if:
+      - condition: template
+        value_template: "{{ time > (previous + 10) }}"
+        enabled: false
       - condition: state
         entity_id: timer.meshcore_path_timer
         state: idle
@@ -148,13 +152,17 @@ actions:
             }
           qos: "0"
           retain: true
+        enabled: true
       - action: timer.start
         metadata: {}
         data: {}
         target:
           entity_id: timer.meshcore_path_timer
       - delay:
+          hours: 0
+          minutes: 0
           seconds: 1
+          milliseconds: 0
 mode: single
 ```
 If this is a new record also a discovery record should be created. This is done with "script.meshcore_path_data"
