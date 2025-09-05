@@ -18,21 +18,25 @@ This markdown card is not really required but gives some additional information 
 
 ```
 type: markdown
-content: |
+content: >-
+  {% set ignore_list = ['not', 'required', 'left' ] %}
+
   {% set tijd = now() | as_timestamp | int %}
-  {% set type = states['input_select.meshcore_contact_type'].state[:1] |  int %}
-  {% set days_old = states['input_number.meshcore_days_old'].state |  int %}
-  {% set ignore_list = ['not', 'required' ] %}
+
+  {% set type = states['input_select.meshcore_contact_type'].state[:1] |  int(1)
+  %}
+
+  {% set days_old = states['input_number.meshcore_days_old'].state |  int(0) %}
 
   {% set obsolete = states.binary_sensor
     | rejectattr('entity_id', 'in', ignore_list)
-    | selectattr('entity_id', 'search', 'meshcore')
-    | selectattr('entity_id', 'search', '_contact')
+    | selectattr('attributes.last_advert', 'defined')
     | selectattr('state', 'eq', 'stale') 
     | selectattr('attributes.type', 'eq', type )
     | selectattr('attributes.lastmod', 'lt', tijd - days_old*60*60*24)
     | sort(attribute='attributes.lastmod')
   %}
+
 
   {% for id in obsolete %}
     {{ states[id.entity_id].name }}
@@ -51,15 +55,15 @@ card:
   type: entities
 filter:
   template: |-
+    {% set
+    ignore_list = ['not', 'required', 'right' ] %} 
     {% set time = now() | as_timestamp | int %} {% set type =
-    states['input_select.meshcore_contact_type'].state[:1] |  int %} {% set
-    days_old = states['input_number.meshcore_days_old'].state |  int %} {% set
-    ignore_list = ['not', 'required' ] %} 
+    states['input_select.meshcore_contact_type'].state[:1] |  int(1) %} {% set
+    days_old = states['input_number.meshcore_days_old'].state |  int(0) %} 
 
     {% set DEVICES = states.binary_sensor
       | rejectattr('entity_id', 'in', ignore_list)
-      | selectattr('entity_id', 'search', 'meshcore')
-      | selectattr('entity_id', 'search', '_contact')
+      | selectattr('attributes.last_advert', 'defined')
       | selectattr('state', 'eq', 'stale') 
       | selectattr('attributes.type', 'eq', type )
       | selectattr('attributes.lastmod', 'lt', time - days_old*60*60*24)
@@ -69,16 +73,18 @@ filter:
     {% if DEVICES | length > 0 %}
       [
       {% for DEVICE in DEVICES -%}
-        {{{
+        {{
+        {
           'entity': DEVICE.entity_id,
           'name': DEVICE.name,
           'hold_action': {
             'action':'call-service',
             'service' : 'script.meshcore_remove_contact_script',
             'service_data' : {
-              'entity_id' : DEVICE.entity_id }}
-              
-        }}},
+              'entity_id' : DEVICE.entity_id }
+              }
+        }
+        }},
       {% endfor %}
       ]
     {% endif %}
