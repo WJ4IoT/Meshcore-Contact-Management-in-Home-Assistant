@@ -130,5 +130,5 @@ grid_options:
   columns: 12
   rows: full
 ```
-##Remark
+## Remark
 it can be also companions which are captured (with an advert), perhaps this and zero hops will be in the next change.
