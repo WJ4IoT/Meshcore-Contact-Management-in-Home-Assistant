@@ -1,0 +1,28 @@
+alias: Meshcore - Maintenance - Remove Contacts (BAM)
+description: Remove inactive Contacts (please use desired days_old)
+triggers: []
+conditions: []
+actions:
+  - repeat:
+      for_each: >
+        {% set days_old = 7 %}
+        {% set time = now() | as_timestamp | int %}
+        {% set time = time - days_old*24*60*60 %}
+        {{ states.binary_sensor | selectattr('attributes.lastmod', 'defined') 
+        | selectattr('state', 'eq', 'stale')
+        | selectattr('attributes.lastmod', 'lt', time )
+        | sort(attribute='attributes.lastmod') 
+        | map(attribute='object_id') | list
+        }}
+      sequence:
+        - variables:
+            public_key: "{{ repeat.item[-20:-8] }}"
+        - action: meshcore.execute_command
+          data:
+            command: remove_contact {{ public_key }}
+  - action: meshcore.cleanup_unavailable_contacts
+    data: {}
+    enabled: false
+  - stop: Created by WJ4IoT Let me know if this is useful :D
+    enabled: false
+mode: single
