@@ -1,0 +1,32 @@
+alias: Meshcore - Toggle Favorite Script
+description: Meshcore - Toggle Favorite Contact Script
+sequence:
+  - variables:
+      public_key: "{{ entity_id[-20:-8] }}"
+      favorite: "{{ favorite }}"
+      toggle: |-
+        {% if favorite == 0 %}
+          1
+        {% else %}
+          0
+        {% endif %}
+  - action: meshcore.execute_command
+    data:
+      command: change_contact_flags {{ public_key }} {{ toggle }}
+    enabled: true
+  - stop: Created by WJ4IoT
+    enabled: false
+fields:
+  entity_id:
+    selector:
+      text: null
+    name: entity_id
+    description: entity_id
+    required: true
+  favorite:
+    selector:
+      text: null
+    name: favorite
+    description: just to toggle a favorite companion
+    required: true
+mode: singl
