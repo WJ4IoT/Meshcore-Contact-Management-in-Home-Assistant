@@ -1,0 +1,251 @@
+type: sections
+max_columns: 4
+title: MC info
+path: mc_info
+sections:
+  - type: grid
+    cards:
+      - type: heading
+        heading: Companion's Contacts Overview
+        heading_style: title
+        icon: mdi:contacts-outline
+      - type: markdown
+        content: >-
+          {% set contains = states['input_text.meshcore_contact'].state %}
+
+          {% set type = states['input_select.meshcore_contact_type'].state[:1]
+          |  int(1) %} {% set days =
+          states['input_number.meshcore_advert_age'].state |  int(0) %} {% set
+          now = now() | as_timestamp | int %}  {% set time = now - 3*24*60*60
+          %} 
+
+
+          Total: {{ states.binary_sensor
+            | selectattr('attributes.last_advert', 'defined')
+            | list
+            | count 
+            }} Contacts (fav: {{ states.binary_sensor
+            | selectattr('attributes.last_advert', 'defined')
+            | selectattr('attributes.flags', 'eq', 1)
+            | list
+            | count 
+            }}) (on node: {{ states.binary_sensor
+            | selectattr('attributes.last_advert', 'defined')
+            | selectattr('attributes.added_to_node', 'true')
+            | list
+            | count }} - inactive?: {{ states.binary_sensor
+            | selectattr('attributes.last_advert', 'defined')
+            | selectattr('attributes.added_to_node', 'true')
+            | selectattr('attributes.lastmod','lt', time )
+            | list
+            | count }})
+            
+          {{ states.binary_sensor
+            | selectattr('attributes.last_advert', 'defined')
+            | selectattr('attributes.type', 'eq', 1 )
+            | list
+            | count 
+            }} Companions (fav: {{ states.binary_sensor
+            | selectattr('attributes.last_advert', 'defined')
+            | selectattr('attributes.flags', 'eq', 1)
+            | selectattr('attributes.type', 'eq', 1 )
+            | list
+            | count  
+            }}) (on node: {{ states.binary_sensor
+            | selectattr('attributes.last_advert', 'defined')
+            | selectattr('attributes.type', 'eq', 1 )
+            | selectattr('attributes.added_to_node', 'true')
+            | list
+            | count }} - inactive?: {{ states.binary_sensor
+            | selectattr('attributes.last_advert', 'defined')
+            | selectattr('attributes.type', 'eq',1 )
+            | selectattr('attributes.added_to_node', 'true')
+            | selectattr('attributes.lastmod','lt', time )
+            | list
+            | count }})
+          {{ states.binary_sensor
+            | selectattr('attributes.last_advert', 'defined')
+            | selectattr('attributes.type', 'eq', 2 )
+            | list
+            | count }} Repeaters (fav: {{ states.binary_sensor
+            | selectattr('attributes.last_advert', 'defined')
+            | selectattr('attributes.flags', 'eq', 1)
+            | selectattr('attributes.type', 'eq', 2 )
+            | list
+            | count  
+            }}) (on node: {{ states.binary_sensor
+            | selectattr('attributes.last_advert', 'defined')
+            | selectattr('attributes.type', 'eq', 2 )
+            | selectattr('attributes.added_to_node', 'true')
+            | list
+            | count }}- inactive?: {{ states.binary_sensor
+            | selectattr('attributes.last_advert', 'defined')
+            | selectattr('attributes.type', 'eq',2)
+            | selectattr('attributes.added_to_node', 'true')
+            | selectattr('attributes.lastmod','lt', time )
+            | list
+            | count }})
+          {{ states.binary_sensor
+            | selectattr('attributes.last_advert', 'defined')
+            | selectattr('attributes.type', 'eq', 3 )
+            | list
+            | count  
+            }} Room Servers (fav: {{ states.binary_sensor
+            | selectattr('attributes.last_advert', 'defined')
+            | selectattr('attributes.flags', 'eq', 1)
+            | selectattr('attributes.type', 'eq', 3 )
+            | list
+            | count  
+            }}) (on node: {{ states.binary_sensor
+            | selectattr('attributes.last_advert', 'defined')
+            | selectattr('attributes.type', 'eq',3 )
+            | selectattr('attributes.added_to_node', 'true')
+            | list
+            | count }} - inactive?: {{ states.binary_sensor
+            | selectattr('attributes.last_advert', 'defined')
+            | selectattr('attributes.type', 'eq',3 )
+            | selectattr('attributes.added_to_node', 'true')
+            | selectattr('attributes.lastmod','lt', time )
+            | list
+            | count }})
+      - type: horizontal-stack
+        cards:
+          - type: custom:mushroom-select-card
+            entity: input_select.meshcore_contact_type
+          - type: entities
+            entities:
+              - entity: input_text.meshcore_contact
+                name: Limited By
+                icon: mdi:contacts-outline
+        grid_options:
+          columns: 12
+          rows: 2
+      - type: vertical-stack
+        cards:
+          - type: entities
+            entities:
+              - entity: select.meshcore_discovered_contact
+          - type: button
+            name: Add Contact
+            icon: mdi:plus-circle
+            tap_action:
+              action: call-service
+              service: meshcore.add_selected_contact
+  - type: grid
+    cards:
+      - type: heading
+        heading: Result of Selection
+        heading_style: title
+      - type: vertical-stack
+        cards:
+          - type: markdown
+            content: >-
+              {% set contains = states['input_text.meshcore_contact'].state %}
+
+              {% set type =
+              states['input_select.meshcore_contact_type'].state[:1] |  int(1)
+              %} {% set days = states['input_number.meshcore_advert_age'].state
+              |  int(0) %} {% set now = now() | as_timestamp | int %}  {% set
+              time = now - 3*24*60*60 %} 
+
+
+              Records in Selection : {{ states.binary_sensor
+                | selectattr('attributes.last_advert', 'defined')
+                | selectattr('attributes.type', 'eq', type )
+                | selectattr('entity_id', 'search', contains)
+                | list
+                | count 
+                }} (on node: {{ states.binary_sensor
+                | selectattr('attributes.last_advert', 'defined')
+                | selectattr('attributes.added_to_node', 'true')
+                | selectattr('attributes.type', 'eq', type )
+                | selectattr('entity_id', 'search', contains)
+                | list
+                | count }})
+            text_only: true
+      - type: markdown
+        content: >-
+          {% set contains = states['input_text.meshcore_contact'].state %}
+
+          {% set type = states['input_select.meshcore_contact_type'].state[:1]
+          |  int(1) %} {% set days =
+          states['input_number.meshcore_advert_age'].state |  int(0) %}  {% set
+          time = now() | as_timestamp | int(0) %} {% set time = time -
+          days*24*60*60 %} {% set DEVICES = states.binary_sensor
+            | selectattr('attributes.last_advert', 'defined')
+            | selectattr('attributes.type', 'eq', type )
+            | selectattr('attributes.last_advert','gt', time )
+            | selectattr('entity_id', 'search', contains)
+            | sort(attribute='attributes.friendly_name')
+
+          %} {% for id in DEVICES %} {% set mac = id.entity_id[-20:-8] %} {% set
+          mac12 = 'sensor.meshcore_'~mac~'_hops' %}
+            {{ states[id.entity_id].name }} ({{mac[:4]}} {% if states[id.entity_id].attributes.flags == 1 %} - fav {% endif %})
+            last Advert: {{states[id.entity_id].attributes.last_advert | timestamp_custom('%Y-%m-%d %H:%M')}} ({{ states[id.entity_id].state }})
+            Distance: {{ distance(states[id.entity_id].attributes.adv_lat, states[id.entity_id].attributes.adv_lon) | round(2) }} km 
+          {% if states[mac12].state is not defined %} Hops: Not Available
+
+          {% elif states[mac12].attributes.advert is defined %} Hops:
+          {{states[mac12].attributes.hops}} Path:
+          {{states[mac12].attributes.path}} Interval:
+          {{states[mac12].attributes.interval}} uur 
+
+          {% if states[mac12].attributes.heard is not defined %} 
+
+          {% else %} Last Heard: {{states[mac12].attributes.heard | int(0)
+          |timestamp_custom('%Y-%m-%d %H:%M')}}
+
+          {% endif %}{% endif %} {% endfor %}
+  - type: grid
+    cards:
+      - type: heading
+        heading: Toggle Favorite Flag  (hold & wait for circle)
+        heading_style: title
+        grid_options:
+          columns: 9
+          rows: 1
+      - type: custom:auto-entities
+        show empty: false
+        card:
+          type: entities
+        filter:
+          template: >-
+            {% set contains = states['input_text.meshcore_contact'].state %}
+
+            {% set type = states['input_select.meshcore_contact_type'].state[:1]
+            |  int(1) %} 
+
+
+            {% set DEVICES = states.binary_sensor
+              | selectattr('attributes.lastmod', 'defined')
+              | selectattr('state', 'ne', 'discovered') 
+              | selectattr('attributes.type', 'eq', type )
+              | selectattr('entity_id', 'search', contains)
+              | sort(attribute='attributes.friendly_name')
+              | list  
+            %}  
+
+            {% if DEVICES | length > 0 %}
+              [
+              {% for DEVICE in DEVICES -%}
+                {{
+                {
+                  'entity': DEVICE.entity_id,
+                  'name': DEVICE.name,
+                  'favorite': DEVICE.attributes.flags,
+                  'hold_action': {
+                    'action':'call-service',
+                    'service' : 'script.meshcore_toggle_favorite_script',
+                    'service_data' : 
+                    {
+                      'entity_id' : DEVICE.entity_id,
+                      'favorite' : DEVICE.attributes.flags
+                    }
+                  }
+                }
+                }},
+              {% endfor %}
+              ]
+            {% endif %}
+              
+cards: []
