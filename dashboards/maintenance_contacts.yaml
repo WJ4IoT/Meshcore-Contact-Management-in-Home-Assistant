@@ -190,20 +190,18 @@ sections:
               {%- set id = states('input_select.meshcore_selection') -%} {%- if
               id != "No Selection" -%}
 
-              {%- if states[id].name is not defined -%}
-
-              Bye, Bye
-
+              {%- if states[id].adv_lat is not defined -%}
               {%- else -%}
 
-              {%- set lat = states[id].attributes.adv_lat -%} {%- set lon =
-              states[id].attributes.adv_lon -%} {%- set current_lat =
-              state_attr('zone.home', 'latitude') | float -%} {%- set
-              current_lon =  state_attr('zone.home', 'longitude') | float -%}
-              {%- set target_lat =  lat | float -%} {%- set target_lon =  lon |
-              float -%} {%- set rad = 0.017453292519943295 -%} {%- set
-              current_lat_rad= (current_lat * rad) | float -%} {%- set
-              current_lon_rad= (current_lon * rad) | float -%} {%- set
+              {%- set lat = states[id].attributes.adv_lat -%} 
+              {%- set lon = states[id].attributes.adv_lon -%} 
+              {%- set current_lat = state_attr('zone.home', 'latitude') | float -%} 
+              {%- set current_lon =  state_attr('zone.home', 'longitude') | float -%}
+              {%- set target_lat =  lat | float -%} 
+              {%- set target_lon =  lon | float -%} 
+              {%- set rad = 0.017453292519943295 -%} 
+              {%- set current_lat_rad= (current_lat * rad) | float -%} 
+              {%- set current_lon_rad= (current_lon * rad) | float -%} {%- set
               target_lat_rad= (target_lat * rad) | float -%} {%- set
               target_lon_rad= (target_lon * rad) | float -%} {%- set delta_lat =
               (target_lat_rad - current_lat_rad) | float -%} {%- set delta_lon=
