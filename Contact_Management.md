@@ -26,8 +26,8 @@ Some parts explained:
   *   input_select.meshcore_contact_type (with 1 fake option correct ones are added in previous step.
   *   input_number.meshcore_days_old
   *   input_text.meshcore_contact_search 
-* The automation for the [selection](https://github.com/WJ4IoT/Meshcore-Home-Assistant-Solutions/blob/main/automations/meshcore_maintenance_do_action.yaml)
-* The automation for the action [selection](https://github.com/WJ4IoT/Meshcore-Home-Assistant-Solutions/blob/main/automations/meshcore_maintenance_selection.yaml)
+* The automation for the [selection](https://github.com/WJ4IoT/Meshcore-Home-Assistant-Solutions/blob/main/automations/meshcore_maintenance_selection.yaml)
+* The automation for the [action](https://github.com/WJ4IoT/Meshcore-Home-Assistant-Solutions/blob/main/automations/meshcore_maintenance_do_action.yaml)
 * The Revised Maintenance [Dashboard](https://github.com/WJ4IoT/Meshcore-Home-Assistant-Solutions/blob/main/dashboards/maintenance_contacts.yaml)
 
 ## 3. Examples
