@@ -1,0 +1,25 @@
+alias: Meshcore - Maintenance Initial
+description: Set options of the dropdown selection fields
+triggers: []
+conditions: []
+actions:
+  - action: input_select.set_options
+    data:
+      options:
+        - 1 - Companion
+        - 2 - Repeater
+        - 3 - Room Server
+    target:
+      entity_id:
+        - input_select.meshcore_contact_type
+  - action: input_select.set_options
+    data:
+      options:
+        - ADD DISCOVERED
+        - REMOVE CONTACT
+        - REMOVE DISCOVERED
+        - TOGGLE FAVORITE
+    target:
+      entity_id:
+        - input_select.meshcore_maintenance_focus
+mode: single
