@@ -241,7 +241,7 @@ sections:
                 action: perform-action
                 perform_action: automation.trigger
                 target:
-                  entity_id: automation.meshcore_maintennance_do_action
+                  entity_id: automation.meshcore_maintenance_do_action
                 data:
                   skip_condition: true
           - type: conditional
@@ -257,7 +257,7 @@ sections:
                 action: perform-action
                 perform_action: automation.trigger
                 target:
-                  entity_id: automation.meshcore_maintennance_do_action
+                  entity_id: automation.meshcore_maintenance_do_action
                 data:
                   skip_condition: true
           - type: conditional
@@ -275,7 +275,7 @@ sections:
                 action: perform-action
                 perform_action: automation.trigger
                 target:
-                  entity_id: automation.meshcore_maintennance_do_action
+                  entity_id: automation.meshcore_maintenance_do_action
                 data:
                   skip_condition: true
           - type: conditional
@@ -293,7 +293,7 @@ sections:
                 action: perform-action
                 perform_action: automation.trigger
                 target:
-                  entity_id: automation.meshcore_maintennance_do_action
+                  entity_id: automation.meshcore_maintenance_do_action
                 data:
                   skip_condition: true
       - show_name: true
