@@ -190,7 +190,7 @@ sections:
               {%- set id = states('input_select.meshcore_selection') -%} {%- if
               id != "No Selection" -%}
 
-              {%- if states[id].adv_lat is not defined -%}
+              {%- if attributes.adv_lat is not defined -%}
               {%- else -%}
 
               {%- set lat = states[id].attributes.adv_lat -%} 
@@ -201,12 +201,12 @@ sections:
               {%- set target_lon =  lon | float -%} 
               {%- set rad = 0.017453292519943295 -%} 
               {%- set current_lat_rad= (current_lat * rad) | float -%} 
-              {%- set current_lon_rad= (current_lon * rad) | float -%} {%- set
-              target_lat_rad= (target_lat * rad) | float -%} {%- set
-              target_lon_rad= (target_lon * rad) | float -%} {%- set delta_lat =
-              (target_lat_rad - current_lat_rad) | float -%} {%- set delta_lon=
-              (target_lon_rad - current_lon_rad) | float -%} {%- set
-              half_delta_lat = (delta_lat / 2.0) | float -%} {%- set
+              {%- set current_lon_rad= (current_lon * rad) | float -%} 
+              {%- set target_lat_rad= (target_lat * rad) | float -%} 
+              {%- set target_lon_rad= (target_lon * rad) | float -%} 
+              {%- set delta_lat = (target_lat_rad - current_lat_rad) | float -%} 
+              {%- set delta_lon= (target_lon_rad - current_lon_rad) | float -%} 
+              {%- set half_delta_lat = (delta_lat / 2.0) | float -%} {%- set
               half_delta_lon = (delta_lon / 2.0) | float -%} {%- set
               sin_half_delta_lat = half_delta_lat | float | sin -%} {%- set
               sin_half_delta_lon = half_delta_lon | float | sin  -%} {%- set a =
