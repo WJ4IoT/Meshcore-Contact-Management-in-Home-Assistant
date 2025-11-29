@@ -4,7 +4,7 @@ A way to manage your contacts when using the Meshcore Integration. This was a sl
 * An Overview of the count of all contact and potential inactive contacts.
 * An overview of all important details of the contact in focus
 * Toggle Favorite Flag (revised) of an added contact
-* Manage Contacts in BULK (NEW!!!!)
+* Manage Contacts in BULK (NEW!!)
 
 ## 1. How does it look like?
 
@@ -24,5 +24,56 @@ Some parts explained:
 * Mescore Integration Version v2.2.3.
 * HACS Repository: Mushroom
 WATCH OUT NOT YET UPDATE
-* The scripts for the [action](https://github.com/WJ4IoT/Meshcore-Home-Assistant-Solutions/blob/main/automations/meshcore_maintenance_do_action.yaml)
-* The Revised Maintenance [Dashboard](https://github.com/WJ4IoT/Meshcore-Home-Assistant-Solutions/blob/main/dashboards/maintenance_contacts.yaml)
+* [The New script file](https://github.com/WJ4IoT/Meshcore-Home-Assistant-Solutions/blob/main/automations/meshcore_maintenance_do_action.yaml)
+* The Revised Maintenance [Dashboard](https://github.com/WJ4IoT/Meshcore-Home-Assistant-Solutions/blob/main/dashboards/meshcore_contacts.yaml)
+
+## 3. Tweaking Essential
+You must tweak these files for your personnal needs:
+Imagine you want to remove all `stale` contact on your node older than 6 days (defined as `option: old_node_contacts`) 
+In the `dashboard` you need to change the value of days '14' in '6'.
+
+```
+type: button
+name: 🛑 Remove Old Contacts From Node
+action_name: Old
+tap_action:
+  action: call-service
+  service: script.meshcore_contact_management
+  data:
+    option: old_node_contacts
+    days: 14
+```
+
+But in the `script` for `old_node_contacts` the `days_old` will never below 7 until you change it.
+And also the action will never run until you decide this is what you want by enable the last line.
+These safe-guards are built in because when run it the job is done and most likely you & I tend to start reading TFM later.
+```
+- conditions:
+    - condition: template
+      value_template: "{{ option == 'old_node_contacts' }}"
+  sequence:
+    - variables:
+        days_old: |-
+          {% if days < 7 %}
+            7
+          {% else %}
+            {{ days }}
+          {% endif %}
+    - repeat:
+        for_each: |-
+          {%- set time = now() | as_timestamp | int -%} 
+          {%- set time = time - days_old*24*60*60 -%}  
+          {{ states.binary_sensor  | selectattr('attributes.lastmod',
+          'defined') | selectattr('state', 'eq', 'stale')  |
+          selectattr('attributes.lastmod', 'lt', time ) |
+          sort(attribute='attributes.lastmod')   |
+          map(attribute='object_id') | list }}
+        sequence:
+          - variables:
+              public_key: "{{ repeat.item[-20:-8] }}"
+          - action: meshcore.remove_discovered_contact
+            data:
+              pubkey_prefix: "{{ public_key }}"
+            enabled: false
+```
+
