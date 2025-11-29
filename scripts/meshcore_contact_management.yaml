@@ -42,6 +42,33 @@ sequence:
                     command: remove_contact {{ public_key }}
       - conditions:
           - condition: template
+            value_template: "{{ option == 'old_node_contacts' }}"
+        sequence:
+          - variables:
+              days_old: |-
+                {% if days < 7 %}
+                  7
+                {% else %}
+                  {{ days }}
+                {% endif %}
+          - repeat:
+              for_each: |-
+                {%- set time = now() | as_timestamp | int -%} 
+                {%- set time = time - days_old*24*60*60 -%}  
+                {{ states.binary_sensor  | selectattr('attributes.lastmod',
+                'defined') | selectattr('state', 'eq', 'stale')  |
+                selectattr('attributes.lastmod', 'lt', time ) |
+                sort(attribute='attributes.lastmod')   |
+                map(attribute='object_id') | list }}
+              sequence:
+                - variables:
+                    public_key: "{{ repeat.item[-20:-8] }}"
+                - action: meshcore.remove_discovered_contact
+                  data:
+                    pubkey_prefix: "{{ public_key }}"
+                  enabled: false
+      - conditions:
+          - condition: template
             value_template: "{{ option == 'companions' }}"
         sequence:
           - variables:
@@ -53,7 +80,7 @@ sequence:
                 {% endif %}
           - repeat:
               for_each: |-
-                {%- set time = now() | as_timestamp |int -%} 
+                {%- set time = now() | as_timestamp | int -%} 
                 {%- set time = time - days_old*24*60*60 -%}  
                 {{ states.binary_sensor  | selectattr('attributes.lastmod',
                 'defined') | selectattr('state', 'eq', 'discovered')  |
