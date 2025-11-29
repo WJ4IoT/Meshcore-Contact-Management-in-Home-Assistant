@@ -1,0 +1,146 @@
+alias: Meshcore - Contact Management
+description: Mostly used for BULK removal of contacts
+sequence:
+  - choose:
+      - conditions:
+          - condition: template
+            value_template: "{{ option == 'favorite' }}"
+        sequence:
+          - repeat:
+              for_each: |-
+                {{ states.binary_sensor | 
+                selectattr('attributes.lastmod', 'defined') |
+                selectattr('entity_id', 'contains', public_key ) |
+                map(attribute='object_id') | list }}
+              sequence:
+                - variables:
+                    toggle: |-
+                      {% if favorite == 0 %}
+                        1
+                      {% else %}
+                        0
+                      {% endif %}
+                - action: meshcore.execute_command
+                  data:
+                    command: change_contact_flags {{ public_key }} {{ toggle }}
+      - conditions:
+          - condition: template
+            value_template: "{{ option == 'unavailable' }}"
+        sequence:
+          - repeat:
+              for_each: |-
+                {{ states.binary_sensor | 
+                selectattr('entity_id', 'contains', 'meshcore_') |
+                selectattr('entity_id', 'contains', '_contact') |
+                selectattr('state', 'eq', 'unavailable')  |
+                map(attribute='object_id') | list }}
+              sequence:
+                - variables:
+                    public_key: "{{ repeat.item[-20:-8] }}"
+                - action: meshcore.execute_command
+                  data:
+                    command: remove_contact {{ public_key }}
+      - conditions:
+          - condition: template
+            value_template: "{{ option == 'companions' }}"
+        sequence:
+          - variables:
+              days_old: |-
+                {% if days < 7 %}
+                  7
+                {% else %}
+                  {{ days }}
+                {% endif %}
+          - repeat:
+              for_each: |-
+                {%- set time = now() | as_timestamp |int -%} 
+                {%- set time = time - days_old*24*60*60 -%}  
+                {{ states.binary_sensor  | selectattr('attributes.lastmod',
+                'defined') | selectattr('state', 'eq', 'discovered')  |
+                selectattr('attributes.lastmod', 'lt', time ) |
+                selectattr('attributes.type', 'eq', 1 )  |
+                sort(attribute='attributes.lastmod')   |
+                map(attribute='object_id') | list }}
+              sequence:
+                - variables:
+                    public_key: "{{ repeat.item[-20:-8] }}"
+                - action: meshcore.remove_discovered_contact
+                  data:
+                    pubkey_prefix: "{{ public_key }}"
+                  enabled: false
+      - conditions:
+          - condition: template
+            value_template: "{{ option == 'repeaters' }}"
+        sequence:
+          - variables:
+              days_old: |-
+                {% if days < 3 %}
+                  3
+                {% else %}
+                  {{ days }}
+                {% endif %}
+          - repeat:
+              for_each: |-
+                {%- set time = now() | as_timestamp | int -%}
+                {%- set time = time - days_old*24*60*60 -%}
+                {{ states.binary_sensor  | selectattr('attributes.lastmod',
+                'defined') | selectattr('state', 'eq', 'discovered')  |
+                selectattr('attributes.type', 'ne', 1 )  |
+                selectattr('attributes.lastmod', 'lt', time )  |
+                sort(attribute='attributes.lastmod')   |
+                map(attribute='object_id') | list }}
+              sequence:
+                - variables:
+                    public_key: "{{ repeat.item[-20:-8] }}"
+                - action: meshcore.remove_discovered_contact
+                  data:
+                    pubkey_prefix: "{{ public_key }}"
+                  enabled: false
+      - conditions:
+          - condition: template
+            value_template: "{{ option == 'all' }}"
+        sequence:
+          - repeat:
+              for_each: |-
+                {{ states.binary_sensor  | 
+                selectattr('attributes.lastmod', 'defined') |
+                selectattr('state', 'eq', 'discovered') |
+                sort(attribute='attributes.lastmod') |
+                map(attribute='object_id') | list }}
+              sequence:
+                - variables:
+                    public_key: "{{ repeat.item[-20:-8] }}"
+                - action: meshcore.remove_discovered_contact
+                  data:
+                    pubkey_prefix: "{{ public_key }}"
+                  enabled: false
+    default:
+      - stop: Created by WJ4IoT Let me know if this is useful :D
+        enabled: false
+fields:
+  option:
+    selector:
+      text: null
+    name: option
+    description: input files which defines the sequence
+    required: true
+  public_key:
+    selector:
+      text: null
+    name: public_key
+    description: public_key
+    required: false
+  favorite:
+    selector:
+      text: null
+    name: favorite
+    description: just to toggle a favorite companion
+    required: false
+  days:
+    selector:
+      number:
+        min: 0.5
+        max: 100
+    name: days
+    description: Number of days the contact must be old
+    required: false
