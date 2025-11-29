@@ -1,0 +1,418 @@
+type: sections
+max_columns: 4
+title: MC Contacts
+path: meshcore_contacts
+sections:
+  - type: grid
+    cards:
+      - type: markdown
+        title: Manage Contacts (Overview)
+        content: |-
+          {% set now = now() | as_timestamp | int %}  
+          {%- set time  = now - 3*24*60*60 %}
+          {%- set timeC = now - 7*24*60*60 %} 
+          {{ states.binary_sensor
+            | selectattr('attributes.last_advert', 'defined')
+            | list
+            | count
+
+            }} Contacts (on node: {{ states.binary_sensor
+            | selectattr('attributes.last_advert', 'defined')
+            | selectattr('attributes.added_to_node', 'true')
+            | list
+            | count }} - fav: {{ states.binary_sensor
+            | selectattr('attributes.last_advert', 'defined')
+            | selectattr('attributes.flags', 'eq', 1)
+            | list
+            | count}})
+            
+          {{ states.binary_sensor
+            | selectattr('attributes.last_advert', 'defined')
+            | selectattr('attributes.type', 'eq', 1 )
+            | list
+            | count 
+            }} Companions (IA?: {{ states.binary_sensor
+            | selectattr('attributes.last_advert', 'defined')
+            | selectattr('attributes.type', 'eq', 1 )
+            | selectattr('attributes.lastmod','lt', timeC )
+            | list
+            | count
+            
+            }}) (on node: {{ states.binary_sensor
+            | selectattr('attributes.last_advert', 'defined')
+            | selectattr('attributes.type', 'eq', 1 )
+            | selectattr('attributes.added_to_node', 'true')
+            | list
+            | count }} - fav: {{ states.binary_sensor
+            | selectattr('attributes.last_advert', 'defined')
+            | selectattr('attributes.flags', 'eq', 1)
+            | selectattr('attributes.type', 'eq', 1 )
+            | list
+            | count 
+            }} - IA?: {{ states.binary_sensor
+            | selectattr('attributes.last_advert', 'defined')
+            | selectattr('attributes.type', 'eq',1 )
+            | selectattr('attributes.added_to_node', 'true')
+            | selectattr('attributes.lastmod','lt', timeC )
+            | list
+            | count }})
+          {{ states.binary_sensor
+            | selectattr('attributes.last_advert', 'defined')
+            | selectattr('attributes.type', 'eq', 2 )
+            | list
+            | count 
+            }} Repeaters (IA?: {{ states.binary_sensor
+            | selectattr('attributes.last_advert', 'defined')
+            | selectattr('attributes.lastmod','lt', time )
+            | selectattr('attributes.type', 'eq', 2 )
+            | list
+            | count  
+            }}) (on node: {{ states.binary_sensor
+            | selectattr('attributes.last_advert', 'defined')
+            | selectattr('attributes.type', 'eq', 2 )
+            | selectattr('attributes.added_to_node', 'true')
+            | list
+            | count }} - fav: {{ states.binary_sensor
+            | selectattr('attributes.last_advert', 'defined')
+            | selectattr('attributes.flags', 'eq', 1)
+            | selectattr('attributes.type', 'eq', 2 )
+            | list
+            | count }}  - IA?: {{ states.binary_sensor
+            | selectattr('attributes.last_advert', 'defined')
+            | selectattr('attributes.type', 'eq', 2)
+            | selectattr('attributes.added_to_node', 'true')
+            | selectattr('attributes.lastmod','lt', time )
+            | list
+            | count }})
+          {{ states.binary_sensor
+            | selectattr('attributes.last_advert', 'defined')
+            | selectattr('attributes.type', 'eq', 3 )
+            | list
+            | count  
+            }} Room Servers (IA?: {{ states.binary_sensor
+            | selectattr('attributes.last_advert', 'defined')
+            | selectattr('attributes.lastmod','lt', time )
+            | selectattr('attributes.type', 'eq', 3 )
+            | list
+            | count  
+            }}) (on node: {{ states.binary_sensor
+            | selectattr('attributes.last_advert', 'defined')
+            | selectattr('attributes.type', 'eq', 3 )
+            | selectattr('attributes.added_to_node', 'true')
+            | list
+            | count }} - fav: {{ states.binary_sensor
+            | selectattr('attributes.last_advert', 'defined')
+            | selectattr('attributes.flags', 'eq', 1)
+            | selectattr('attributes.type', 'eq', 3 )
+            | list
+            | count }} - IA?: {{ states.binary_sensor
+            | selectattr('attributes.last_advert', 'defined')
+            | selectattr('attributes.type', 'eq', 3 )
+            | selectattr('attributes.added_to_node', 'true')
+            | selectattr('attributes.lastmod','lt', time )
+            | list
+            | count }})
+        grid_options:
+          columns: 12
+          rows: auto
+      - type: horizontal-stack
+        cards:
+          - type: markdown
+            content: >-
+
+              {% set type =
+              states['input_select.meshcore_contact_type'].state[:1] |  int(1)
+              %} 
+
+              {%- set days = states['input_number.meshcore_days_old'].state | 
+              int(0) %} {% set now = now() | as_timestamp | int %}  {%- set time
+              = now - days*24*60*60 %} 
+
+
+              Node Count: {{
+              states['sensor.meshcore_696e4b_node_count_wj_domusip'].state }}
+
+              Added to Node - True: {{ states.binary_sensor
+
+              | selectattr('entity_id', 'contains', 'meshcore_')
+
+              | selectattr('entity_id', 'contains', '_contact')
+
+              | selectattr('attributes.added_to_node', 'true')
+
+              | list | count
+
+              }}
+
+              Added to Node - False: {{ states.binary_sensor
+
+              | selectattr('entity_id', 'contains', 'meshcore_')
+
+              | selectattr('entity_id', 'contains', '_contact')
+
+              | selectattr('attributes.added_to_node', 'false')
+
+              | list | count
+
+              }}
+
+              Favorite Flag: {{ states.binary_sensor
+
+              | selectattr('entity_id', 'contains', 'meshcore_')
+
+              | selectattr('entity_id', 'contains', '_contact')
+
+              | selectattr('attributes.flags', 'eq', 1 )
+
+              | list | count
+
+              }}
+          - type: markdown
+            content: |-
+              Status - Discovered: {{ states.binary_sensor
+              | selectattr('entity_id', 'contains', 'meshcore_')
+              | selectattr('entity_id', 'contains', '_contact')
+              | selectattr('state', 'eq', 'discovered')
+              | list | count
+              }}
+              Status - Fresh: {{ states.binary_sensor
+              | selectattr('entity_id', 'contains', 'meshcore_')
+              | selectattr('entity_id', 'contains', '_contact')
+              | selectattr('state', 'eq', 'fresh')
+              | list | count
+              }}
+              Status - Stale: {{ states.binary_sensor
+              | selectattr('entity_id', 'contains', 'meshcore_')
+              | selectattr('entity_id', 'contains', '_contact')
+              | selectattr('state', 'eq', 'stale')
+              | list | count
+              }}
+              Status - Unavailable: {{ states.binary_sensor
+              | selectattr('entity_id', 'contains', 'meshcore_')
+              | selectattr('entity_id', 'contains', '_contact')
+              | selectattr('state', 'eq', 'unavailable')
+              | list | count
+              }}
+      - type: entities
+        title: Manage Contacts (BULK)
+        entities:
+          - type: button
+            name: 🔄 Reload Meshcore Device
+            action_name: Releoad
+            tap_action:
+              action: call-service
+              service: homeassistant.reload_config_entry
+              data:
+                device_id: 97b090d2c09320ecc86f3f564e55345d
+          - type: button
+            name: 🧹 Cleanup Unavailable Contacts
+            action_name: Cleanup
+            tap_action:
+              action: call-service
+              service: meshcore.cleanup_unavailable_contacts
+          - type: button
+            name: ⚠️ Remove Unavailable Contacts from Node
+            action_name: Unavailable
+            tap_action:
+              action: call-service
+              service: script.meshcore_contact_management
+              data:
+                option: unavailable
+          - type: button
+            name: 🛑 Remove Old Contacts From Node
+            action_name: Old
+            tap_action:
+              action: call-service
+              service: script.meshcore_contact_management
+              data:
+                option: old_node_contacts
+                days: 14
+          - type: button
+            name: ⚠️ Remove Obsolete Discovered Companions
+            action_name: Companions
+            tap_action:
+              action: call-service
+              service: script.meshcore_contact_management
+              data:
+                option: companions
+                days: 7.5
+          - type: button
+            name: ⚠️ Remove Obsolete Discovered Repeaters
+            action_name: Repeaters
+            tap_action:
+              action: call-service
+              service: script.meshcore_contact_management
+              data:
+                option: repeaters
+                days: 3.5
+          - type: button
+            name: 🛑 Remove ALL Discovered Contacts
+            action_name: ALL
+            tap_action:
+              action: call-service
+              service: script.meshcore_contact_management
+              data:
+                option: all
+        grid_options:
+          columns: 12
+          rows: auto
+  - type: grid
+    cards:
+      - type: entities
+        title: Manage Contacts (Individual)
+        entities:
+          - entity: select.meshcore_discovered_contact
+            name: Discovered
+            secondary_info: last-changed
+          - type: button
+            name: ➕ Add Contact
+            action_name: Add
+            tap_action:
+              action: call-service
+              service: meshcore.add_selected_contact
+          - type: button
+            name: 🗑️ Remove Discovered
+            action_name: Remove
+            tap_action:
+              action: call-service
+              service: meshcore.remove_discovered_contact
+          - entity: select.meshcore_added_contact
+            name: Added
+            secondary_info: last-changed
+          - type: button
+            name: ➖ Remove Contact
+            action_name: Remove
+            tap_action:
+              action: call-service
+              service: meshcore.remove_selected_contact
+          - type: button
+            name: 🚩 Favorite Flag (script/WiP)
+            action_name: Toggle
+            tap_action:
+              action: call-service
+              service: script.meshcore_contact_management_bam
+              data:
+                option: favorite
+                key: states[input_text.meshcore_contact].state
+      - type: custom:auto-entities
+        show empty: false
+        card:
+          type: entities
+          title: Hold for Circle to Toggle Favorite Flag
+        filter:
+          template: |-
+            {% set contains = states('select.meshcore_added_contact')[-13:-1] %}
+            {% set DEVICES = states.binary_sensor
+              | selectattr('attributes.lastmod', 'defined')
+              | selectattr('entity_id', 'search', contains)
+              | list  
+            %} 
+
+            {% if DEVICES | length > 0 %}
+              [
+              {% for DEVICE in DEVICES -%}
+                {{
+                {
+                  'entity': DEVICE.entity_id,
+                  'name': DEVICE.name,
+                  'favorite': DEVICE.attributes.flags,
+                  'hold_action': {
+                    'action':'call-service',
+                    'service' : 'script.meshcore_contact_management',
+                    'service_data' : 
+                    {
+                      'option' : "favorite",
+                      'public_key' : DEVICE.entity_id[-20:-8],
+                      'favorite' : DEVICE.attributes.flags
+                    }
+                  }
+                }
+                }},
+              {% endfor %}
+              ]
+            {% endif %}
+              
+        visibility:
+          - condition: state
+            entity: select.meshcore_added_contact
+            state_not: Select a contact...
+      - type: vertical-stack
+        cards:
+          - type: markdown
+            content: >-
+              {%- if states('select.meshcore_added_contact') != "Select a
+              contact..." %}  {% set contact =
+              states('select.meshcore_added_contact') %} {% else %} {% set
+              contact = states('select.meshcore_discovered_contact') %} {% endif
+              %}  {% set public_key = contact[-13:-1] %} {% set DEVICES =
+              states.binary_sensor
+                | selectattr('attributes.lastmod', 'defined')
+                | selectattr('entity_id', 'search', public_key)
+                | map(attribute='entity_id')
+                | list  
+              %} {% for id in DEVICES %} {{ states[id].name }} ({{ public_key
+              }}) {% if states[id].attributes.flags == 1 %} - favorite {% endif
+              %}
+
+              Added to Node : {{ states[id].attributes.added_to_node }} ({{
+              states[id].state }})
+
+              Last Advert : {{ states[id].attributes.last_advert |
+              timestamp_custom('%Y-%m-%d %H:%M')}} 
+
+              Last Mod : {{ states[id].attributes.lastmod | int
+              |timestamp_custom('%Y-%m-%d %H:%M')}}
+
+              {% set lat = states[id].attributes.adv_lat -%} {%- set lon =
+              states[id].attributes.adv_lon -%} {%- set current_lat =
+              state_attr('zone.home', 'latitude') | float -%} {%- set
+              current_lon =  state_attr('zone.home', 'longitude') | float -%}
+              {%- set target_lat =  lat | float -%} {%- set target_lon =  lon |
+              float -%} {%- set rad = 0.017453292519943295 -%} {%- set
+              current_lat_rad= (current_lat * rad) | float -%} {%- set
+              current_lon_rad= (current_lon * rad) | float -%} {%- set
+              target_lat_rad= (target_lat * rad) | float -%} {%- set
+              target_lon_rad= (target_lon * rad) | float -%} {%- set delta_lat =
+              (target_lat_rad - current_lat_rad) | float -%} {%- set delta_lon=
+              (target_lon_rad - current_lon_rad) | float -%} {%- set
+              half_delta_lat = (delta_lat / 2.0) | float -%} {%- set
+              half_delta_lon = (delta_lon / 2.0) | float -%} {%- set
+              sin_half_delta_lat = half_delta_lat | float | sin -%} {%- set
+              sin_half_delta_lon = half_delta_lon | float | sin  -%} {%- set a =
+              ((sin_half_delta_lat ** 2) + (cos(current_lat_rad) *
+                  cos(target_lat_rad) * (sin_half_delta_lon ** 2))) | float -%}
+              {%- set c = (2.0 * atan2(sqrt(a), sqrt(1.0 - a))) | float -%} {%-
+              set dist = (c) * 6371.0 | round(1) -%} {%- set y = (sin(delta_lon)
+              | float) * (cos(target_lat_rad) | float) -%} {%- set x = (
+              (cos(current_lat_rad) | float) * (sin(target_lat_rad) | float) -
+              (sin(current_lat_rad) | float) * (cos(target_lat_rad) | float) *
+                            (cos(delta_lon) | float)) | float -%}
+              {% set bearing = ((atan2(y, x) * 57.2957795) + 360.0) % 360.0 |
+              round(1)      %} Distance :  {{ dist | round(2) }} km, bearing:
+              {%- if bearing <= 22.5 %} N {%- elif bearing <= 67.5 %} NE  {%-
+              elif bearing <= 112.5 %} E  {%- elif bearing <= 157.5 %} SE  {%-
+              elif bearing <= 202.5 %} S  {%- elif bearing <= 247.5 %} SW {%-
+              elif bearing <= 292.5 %} W {%- elif bearing <= 337.5 %} NW {%-
+              else -%}  N  {%- endif %} {{ bearing | round(1)}}°
+
+              {%- set hops = 'sensor.meshcore_'~public_key~'_hops' -%} 
+
+              {%- if states[hops].state is defined %} 
+
+              Advert Details: Hops: {{states[hops].attributes.hops}} Path:
+              {{states[hops].attributes.path}} Interval:
+              {{states[hops].attributes.interval}} uur 
+
+              {% endif %} 
+
+              {%- endfor -%}
+        grid_options:
+          columns: 12
+          rows: auto
+        visibility:
+          - condition: state
+            state_not: ""
+visible:
+  - user: 8bc918ea433642e49eb80b1fb14ba84d
+  - user: c8d412ba35d64f72a563fbd484f11535
+cards: []
