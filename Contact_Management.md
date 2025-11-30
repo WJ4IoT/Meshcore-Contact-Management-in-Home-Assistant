@@ -12,7 +12,7 @@ A way to manage your contacts when using the Meshcore Integration. This was a sl
 
 Some parts explained:
 * The `Manage Contact (Overview)` card gives information of the contacts in Home Assistant and on your node. With the fix setting for companions 3 days old and 7 for others (feel free to change this preference).
-* The +1 difference between `node count` and `Added to Node - True` seems a small mistake, so expect this difference.
+* The +1 difference between `node count` and `Added to Node - True` seems a small mistake, so expect this difference. If this section is blank you might to change the entity_id of your own node.
 * The `manage Contacts (BULK)` is in potential destructive, to make sure you understand what will happen essential parts of the script are disabled, Other safecards are days should be given and cannot be lower than a certain threshold (again feel free to change this preference).
 * The `Manage Contacts (Individual)` is standard except for the last line `🚩 Favorite Flag (script/WiP)`. This part is not but also not working but I liked the 🚩.
 * When the focus is on an added contact the `Hold for Circle to Toggle Favorite Flag` will be visible. If you hold (until the cicle) it will set the favorite flag, but please be patience, very very patience because the effect will not be visible for some (long) time.
@@ -23,7 +23,7 @@ Some parts explained:
 ## 2. Requirements
 * Mescore Integration Version v2.2.3.
 * HACS Repository: Mushroom
-* [The New script file](https://github.com/WJ4IoT/Meshcore-Home-Assistant-Solutions/blob/main/automations/meshcore_maintenance_do_action.yaml)
+* [The New script file](https://github.com/WJ4IoT/Meshcore-Home-Assistant-Solutions/blob/main/scripts/meshcore_contact_management.yaml)
 * The Revised Maintenance [Dashboard](https://github.com/WJ4IoT/Meshcore-Home-Assistant-Solutions/blob/main/dashboards/meshcore_contacts.yaml)
 
 ## 3. Tweaking Essential
