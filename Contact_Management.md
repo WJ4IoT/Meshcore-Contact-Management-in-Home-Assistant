@@ -23,7 +23,6 @@ Some parts explained:
 ## 2. Requirements
 * Mescore Integration Version v2.2.3.
 * HACS Repository: Mushroom
-WATCH OUT NOT YET UPDATE
 * [The New script file](https://github.com/WJ4IoT/Meshcore-Home-Assistant-Solutions/blob/main/automations/meshcore_maintenance_do_action.yaml)
 * The Revised Maintenance [Dashboard](https://github.com/WJ4IoT/Meshcore-Home-Assistant-Solutions/blob/main/dashboards/meshcore_contacts.yaml)
 
