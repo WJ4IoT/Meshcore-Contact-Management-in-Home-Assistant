@@ -1,16 +1,16 @@
 type: sections
 max_columns: 4
 title: MC Contacts
-path: meshcore_contacts
+path: mc_contacts
 sections:
   - type: grid
     cards:
       - type: markdown
         title: Manage Contacts (Overview)
         content: |-
-          {% set now = now() | as_timestamp | int %}  
-          {%- set time  = now - 3*24*60*60 %}
-          {%- set timeC = now - 7*24*60*60 %} 
+          {%- set now = now() | as_timestamp | int -%}  
+          {%- set time  = now - 3*24*60*60 -%}
+          {%- set timeC = now - 7*24*60*60 -%} 
           {{ states.binary_sensor
             | selectattr('attributes.last_advert', 'defined')
             | list
@@ -128,45 +128,23 @@ sections:
               int(0) %} {% set now = now() | as_timestamp | int %}  {%- set time
               = now - days*24*60*60 %} 
 
-
               Node Count: {{
               states['sensor.meshcore_696e4b_node_count_wj_domusip'].state }}
 
-              Added to Node - True: {{ states.binary_sensor
+              Added to Node - True: {{ states.binary_sensor |
+              selectattr('entity_id', 'contains', 'meshcore_') |
+              selectattr('entity_id', 'contains', '_contact') |
+              selectattr('attributes.added_to_node', 'true') | list | count }}
 
-              | selectattr('entity_id', 'contains', 'meshcore_')
+              Added to Node - False:  {{ states.binary_sensor |
+              selectattr('entity_id', 'contains', 'meshcore_') |
+              selectattr('entity_id', 'contains', '_contact') |
+              selectattr('attributes.added_to_node', 'false') | list | count }}
 
-              | selectattr('entity_id', 'contains', '_contact')
-
-              | selectattr('attributes.added_to_node', 'true')
-
-              | list | count
-
-              }}
-
-              Added to Node - False: {{ states.binary_sensor
-
-              | selectattr('entity_id', 'contains', 'meshcore_')
-
-              | selectattr('entity_id', 'contains', '_contact')
-
-              | selectattr('attributes.added_to_node', 'false')
-
-              | list | count
-
-              }}
-
-              Favorite Flag: {{ states.binary_sensor
-
-              | selectattr('entity_id', 'contains', 'meshcore_')
-
-              | selectattr('entity_id', 'contains', '_contact')
-
-              | selectattr('attributes.flags', 'eq', 1 )
-
-              | list | count
-
-              }}
+              Favorite Flag: {{ states.binary_sensor | selectattr('entity_id',
+              'contains', 'meshcore_') | selectattr('entity_id', 'contains',
+              '_contact') | selectattr('attributes.flags', 'eq', 1 ) | list |
+              count }}
           - type: markdown
             content: |-
               Status - Discovered: {{ states.binary_sensor
@@ -246,6 +224,14 @@ sections:
                 option: repeaters
                 days: 3.5
           - type: button
+            name: ⚠️ Remove Added Contacts from Discovered File
+            action_name: Added
+            tap_action:
+              action: call-service
+              service: script.meshcore_contact_management
+              data:
+                option: added
+          - type: button
             name: 🛑 Remove ALL Discovered Contacts
             action_name: ALL
             tap_action:
@@ -286,56 +272,13 @@ sections:
               action: call-service
               service: meshcore.remove_selected_contact
           - type: button
-            name: 🚩 Favorite Flag (script/WiP)
+            name: 🚩 Toggle Favorite Flag (slow response)
             action_name: Toggle
             tap_action:
               action: call-service
-              service: script.meshcore_contact_management_bam
+              service: script.meshcore_contact_management
               data:
                 option: favorite
-                key: states[input_text.meshcore_contact].state
-      - type: custom:auto-entities
-        show empty: false
-        card:
-          type: entities
-          title: Hold for Circle to Toggle Favorite Flag
-        filter:
-          template: |-
-            {% set contains = states('select.meshcore_added_contact')[-13:-1] %}
-            {% set DEVICES = states.binary_sensor
-              | selectattr('attributes.lastmod', 'defined')
-              | selectattr('entity_id', 'search', contains)
-              | list  
-            %} 
-
-            {% if DEVICES | length > 0 %}
-              [
-              {% for DEVICE in DEVICES -%}
-                {{
-                {
-                  'entity': DEVICE.entity_id,
-                  'name': DEVICE.name,
-                  'favorite': DEVICE.attributes.flags,
-                  'hold_action': {
-                    'action':'call-service',
-                    'service' : 'script.meshcore_contact_management',
-                    'service_data' : 
-                    {
-                      'option' : "favorite",
-                      'public_key' : DEVICE.entity_id[-20:-8],
-                      'favorite' : DEVICE.attributes.flags
-                    }
-                  }
-                }
-                }},
-              {% endfor %}
-              ]
-            {% endif %}
-              
-        visibility:
-          - condition: state
-            entity: select.meshcore_added_contact
-            state_not: Select a contact...
       - type: vertical-stack
         cards:
           - type: markdown
@@ -412,7 +355,5 @@ sections:
         visibility:
           - condition: state
             state_not: ""
-visible:
-  - user: 8bc918ea433642e49eb80b1fb14ba84d
-  - user: c8d412ba35d64f72a563fbd484f11535
+visible: []
 cards: []
