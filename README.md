@@ -7,7 +7,7 @@ Do not expect fancy single packages or blueprints. In the end they are not rocke
 Enough blah blah, My first two solutions were:
 
 * [Contact Management](Contact_Management.md): using the standard card with some additional flavor like toggle Favorite, additional info and BULK mutations and contacts overview.
-* [Reply to the Correct Channel.md]([Reply_in_the_Correct_Channel.md): A pretty simple way to avoid you reply in the wrong channel (now including with a DM-card)
+* [Reply to the Correct Channel.md](Reply_in_the_Correct_Channel.md): A pretty simple way to avoid you reply in the wrong channel (now including with a DM-card)
 
 Maybe more will follow, you will see them in the overview
 
