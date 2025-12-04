@@ -6,14 +6,19 @@ sequence:
           - condition: template
             value_template: "{{ option == 'favorite' }}"
         sequence:
+          - variables:
+              pubkey_prefix: >-
+                {{- state_attr('select.meshcore_added_contact','pubkey_prefix')
+                -}}
           - repeat:
-              for_each: |-
-                {{ states.binary_sensor | 
-                selectattr('attributes.lastmod', 'defined') |
-                selectattr('entity_id', 'contains', public_key ) |
-                map(attribute='object_id') | list }}
+              for_each: >-
+                {{ states.binary_sensor |  selectattr('attributes.lastmod',
+                'defined') | selectattr('attributes.pubkey_prefix', 'contains',
+                pubkey_prefix) | map(attribute='object_id') | list }}
               sequence:
                 - variables:
+                    entity_id: binary_sensor.{{ repeat.item }}
+                    favorite: "{{ state_attr(entity_id,'flags')}}"
                     toggle: |-
                       {% if favorite == 0 %}
                         1
@@ -22,7 +27,7 @@ sequence:
                       {% endif %}
                 - action: meshcore.execute_command
                   data:
-                    command: change_contact_flags {{ public_key }} {{ toggle }}
+                    command: change_contact_flags {{ pubkey_prefix }} {{ toggle }}
       - conditions:
           - condition: template
             value_template: "{{ option == 'unavailable' }}"
@@ -40,6 +45,7 @@ sequence:
                 - action: meshcore.execute_command
                   data:
                     command: remove_contact {{ public_key }}
+                  enabled: false
       - conditions:
           - condition: template
             value_template: "{{ option == 'old_node_contacts' }}"
@@ -55,11 +61,11 @@ sequence:
               for_each: |-
                 {%- set time = now() | as_timestamp | int -%} 
                 {%- set time = time - days_old*24*60*60 -%}  
-                {{ states.binary_sensor  | selectattr('attributes.lastmod',
-                'defined') | selectattr('state', 'eq', 'stale')  |
-                selectattr('attributes.lastmod', 'lt', time ) |
-                sort(attribute='attributes.lastmod')   |
-                map(attribute='object_id') | list }}
+                {{- states.binary_sensor  
+                | selectattr('attributes.lastmod', 'defined') 
+                | selectattr('state', 'eq', 'stale')  
+                | selectattr('attributes.lastmod', 'lt', time ) 
+                | map(attribute='object_id') | list }}
               sequence:
                 - variables:
                     public_key: "{{ repeat.item[-20:-8] }}"
@@ -82,12 +88,12 @@ sequence:
               for_each: |-
                 {%- set time = now() | as_timestamp | int -%} 
                 {%- set time = time - days_old*24*60*60 -%}  
-                {{ states.binary_sensor  | selectattr('attributes.lastmod',
-                'defined') | selectattr('state', 'eq', 'discovered')  |
+                {{- states.binary_sensor  | 
+                selectattr('attributes.lastmod', 'defined') | 
+                selectattr('state', 'eq', 'discovered')  |
                 selectattr('attributes.lastmod', 'lt', time ) |
                 selectattr('attributes.type', 'eq', 1 )  |
-                sort(attribute='attributes.lastmod')   |
-                map(attribute='object_id') | list }}
+                map(attribute='object_id') | list -}}
               sequence:
                 - variables:
                     public_key: "{{ repeat.item[-20:-8] }}"
@@ -110,12 +116,12 @@ sequence:
               for_each: |-
                 {%- set time = now() | as_timestamp | int -%}
                 {%- set time = time - days_old*24*60*60 -%}
-                {{ states.binary_sensor  | selectattr('attributes.lastmod',
-                'defined') | selectattr('state', 'eq', 'discovered')  |
-                selectattr('attributes.type', 'ne', 1 )  |
-                selectattr('attributes.lastmod', 'lt', time )  |
-                sort(attribute='attributes.lastmod')   |
-                map(attribute='object_id') | list }}
+                {{- states.binary_sensor  
+                | selectattr('attributes.lastmod', 'defined') 
+                | selectattr('state', 'eq', 'discovered')  
+                | selectattr('attributes.type', 'ne', 1 )
+                | selectattr('attributes.lastmod', 'lt', time )  
+                | map(attribute='object_id') | list }}
               sequence:
                 - variables:
                     public_key: "{{ repeat.item[-20:-8] }}"
@@ -123,6 +129,27 @@ sequence:
                   data:
                     pubkey_prefix: "{{ public_key }}"
                   enabled: false
+      - conditions:
+          - condition: template
+            value_template: "{{ option == 'added' }}"
+        sequence:
+          - repeat:
+              for_each: |-
+                {{- states.binary_sensor  
+                | selectattr('attributes.lastmod','defined') 
+                | selectattr('state', 'ne', 'discovered')  
+                | selectattr('attributes.added_to_node', 'eq', true )  
+                | map(attribute='object_id') | list -}}
+              sequence:
+                - variables:
+                    public_key: "{{ repeat.item[-20:-8] }}"
+                - action: meshcore.remove_discovered_contact
+                  data:
+                    pubkey_prefix: "{{ public_key }}"
+          - action: script.meshcore_contact_management
+            metadata: {}
+            data:
+              option: reload
       - conditions:
           - condition: template
             value_template: "{{ option == 'all' }}"
@@ -142,7 +169,7 @@ sequence:
                     pubkey_prefix: "{{ public_key }}"
                   enabled: false
     default:
-      - stop: Created by WJ4IoT Let me know if this is useful :D
+      - stop: Created by WJ4IoT v1.01 new - added to clean discovered file.
         enabled: false
 fields:
   option:
@@ -151,18 +178,6 @@ fields:
     name: option
     description: input files which defines the sequence
     required: true
-  public_key:
-    selector:
-      text: null
-    name: public_key
-    description: public_key
-    required: false
-  favorite:
-    selector:
-      text: null
-    name: favorite
-    description: just to toggle a favorite companion
-    required: false
   days:
     selector:
       number:
@@ -171,4 +186,3 @@ fields:
     name: days
     description: Number of days the contact must be old
     required: false
-
