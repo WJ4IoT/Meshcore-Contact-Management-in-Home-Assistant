@@ -10,8 +10,7 @@ A way to manage your contacts when using the Meshcore Integration. This was a sl
 
 ## 1. How does it look like?
 
-<img width="992" height="757" alt="image" src="https://github.com/user-attachments/assets/3b1dfa6e-7dac-4656-a159-484f8eae1d1c" />
-
+<img width="1050" height="750" alt="image" src="https://github.com/user-attachments/assets/185e96a3-acf6-402a-bfe8-d58eb9059360" />
 
 Some parts explained:
 * The `Manage Contact (Overview)` card gives information of the contacts in Home Assistant and on your node. With the fix setting for companions 3 days old and 7 for others (feel free to change this preference).
