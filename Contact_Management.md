@@ -5,18 +5,20 @@ A way to manage your contacts when using the Meshcore Integration. This was a sl
 * An Overview of the count of all contact and potential inactive contacts.
 * An overview of all important details of the contact in focus
   * Bij default the focus is on an added contact, if none is selected it will show the selected discovered contact.
-* Manage Contacts in BULK (NEW!!). Please tweak this to your own preferences
-  * Last change is `⚠️ Remove Added Contacts from Discovered File`; this will reduce this file and avoid obsolte records will linger on.
+* Manage Contacts in BULK (NEW!!). Please tweak this to your own preferences BY DEFAULT most of these options are disabled.
+  * Last change is `⚠️ Remove Added Contacts from Discovered File`; this will reduce this file and avoid obsolete records will linger on. Also deleted two obsolete options.  * 
 
 ## 1. How does it look like?
 
-<img width="1050" height="750" alt="image" src="https://github.com/user-attachments/assets/185e96a3-acf6-402a-bfe8-d58eb9059360" />
+<img width="1052" height="674" alt="image" src="https://github.com/user-attachments/assets/bda924f2-bcf1-4eeb-8f55-73e8b8d25bc2" />
 
 Some parts explained:
 * The `Manage Contact (Overview)` card gives information of the contacts in Home Assistant and on your node. With the fix setting for companions 3 days old and 7 for others (feel free to change this preference).
 * The +1 difference between `node count` and `Added to Node - True` seems a small mistake, so expect this difference. If this section is blank you might need still to change the entity_id to your own node.
-* The `manage Contacts (BULK)` is in potential destructive, to make sure you understand what will happen essential parts of the script are disabled, Other safecards are days should be given and cannot be lower than a certain threshold (again feel free to change this preference). The `🔄 Reload Meshcore Device` needs to refer to the `device_id` of your node, easiest way to find this unlogical number is in a new automation. Until you do this expect the error `Failed to perform the action homeassistant/reload_config_entry. There were no matching config entries to reload`.
-* The `Manage Contacts (Individual)` is standard except for the last line `🚩 Favorite Flag (slow resonse)`. This part is now working but the update back to HA takes a lot of time.
+* The `manage Contacts (BULK)` is in potential destructive, to make sure you understand what will happen essential parts of the script are disabled, Other safe cards are days should be given and cannot be lower than a certain threshold (again feel free to change this preference). The `🔄 Reload Meshcore Device` needs to refer to the `device_id` of your node, easiest way to find this unlogical number is in a new automation. Until you do this expect the error `Failed to perform the action homeassistant/reload_config_entry. There were no matching config entries to reload`.
+ * My own preference days old for adverts are: 7 days for companions, 3 days for others for the Discovered Contacts, 7 days for all added contacts on node.
+ * The correct order is `⚠️ Remove Added Contacts from Discovered File` and then `🛑 Remove Old Contacts From Node` to avoid the Discovered Contacts file gets polluted with obsolete records. 
+* The `Manage Contacts (Individual)` is standard except for the last line `🚩 Favorite Flag (slow response)`. This part is now working but the update back to HA takes a lot of time.
 * Last card is filled with the contact in focus, if both `discovered` and `added` are filled in the detail are of the `added` (change the `added` to `Select a contact to ...` to see `discovered`
 * The second last line is distance, bearing in degrees (both based upon a HA-topic) extended with intercardinal points of the compass and is inspired by a similar topic in the HA forum.
 * The last line with Hops, Path details is probably not visible so previous line is actually the last line.
@@ -76,4 +78,6 @@ These safe-guards are built in because when run it the job is done and most like
               pubkey_prefix: "{{ public_key }}"
             enabled: false
 ```
-
+## 4. Changes
+1. Toggle Favorite added to Individual Manage Contact Card
+2. Remove two bulk options, corrected an small error in script and hopefully improved documentation
