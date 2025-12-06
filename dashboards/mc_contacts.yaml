@@ -1,7 +1,7 @@
 type: sections
 max_columns: 4
 title: MC Contacts
-path: mc_contacts
+path: meshcore_contacts
 sections:
   - type: grid
     cards:
@@ -189,23 +189,6 @@ sections:
               action: call-service
               service: meshcore.cleanup_unavailable_contacts
           - type: button
-            name: ⚠️ Remove Unavailable Contacts from Node
-            action_name: Unavailable
-            tap_action:
-              action: call-service
-              service: script.meshcore_contact_management
-              data:
-                option: unavailable
-          - type: button
-            name: 🛑 Remove Old Contacts From Node
-            action_name: Old
-            tap_action:
-              action: call-service
-              service: script.meshcore_contact_management
-              data:
-                option: old_node_contacts
-                days: 14
-          - type: button
             name: ⚠️ Remove Obsolete Discovered Companions
             action_name: Companions
             tap_action:
@@ -232,13 +215,14 @@ sections:
               data:
                 option: added
           - type: button
-            name: 🛑 Remove ALL Discovered Contacts
-            action_name: ALL
+            name: 🛑 Remove Old Contacts From Node
+            action_name: Old
             tap_action:
               action: call-service
               service: script.meshcore_contact_management
               data:
-                option: all
+                option: old_node_contacts
+                days: 14
         grid_options:
           columns: 12
           rows: auto
