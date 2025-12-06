@@ -1,7 +1,7 @@
 # Meshcore Contact Management Dashboard in Home Assistant 
 A way to manage your contacts when using the Meshcore Integration. This was a slow-cooked 'noobish' development in the GUI so it is not a single package (but now only two files). This a revised version after many tweaking and re-tweaking. What can it do?
 * This dashboard is included the excellent manage contact card including:
-  * Toggle Favorite Flag of an added contact (now working, but response back to HA is not instant but takes times, much time but you check trace of script)
+  * Toggle Favorite Flag of an added contact (now working, but response back to HA is not instant but takes times, much time but you can always check the trace in the script)
 * An Overview of the count of all contact and potential inactive contacts.
 * An overview of all important details of the contact in focus
   * Bij default the focus is on an added contact, if none is selected it will show the selected discovered contact.
