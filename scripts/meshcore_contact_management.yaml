@@ -30,24 +30,6 @@ sequence:
                     command: change_contact_flags {{ pubkey_prefix }} {{ toggle }}
       - conditions:
           - condition: template
-            value_template: "{{ option == 'unavailable' }}"
-        sequence:
-          - repeat:
-              for_each: |-
-                {{ states.binary_sensor | 
-                selectattr('entity_id', 'contains', 'meshcore_') |
-                selectattr('entity_id', 'contains', '_contact') |
-                selectattr('state', 'eq', 'unavailable')  |
-                map(attribute='object_id') | list }}
-              sequence:
-                - variables:
-                    public_key: "{{ repeat.item[-20:-8] }}"
-                - action: meshcore.execute_command
-                  data:
-                    command: remove_contact {{ public_key }}
-                  enabled: false
-      - conditions:
-          - condition: template
             value_template: "{{ option == 'old_node_contacts' }}"
         sequence:
           - variables:
@@ -69,9 +51,9 @@ sequence:
               sequence:
                 - variables:
                     public_key: "{{ repeat.item[-20:-8] }}"
-                - action: meshcore.remove_discovered_contact
+                - action: meshcore.execute_command
                   data:
-                    pubkey_prefix: "{{ public_key }}"
+                    command: remove_contact {{ public_key }}
                   enabled: false
       - conditions:
           - condition: template
@@ -150,26 +132,9 @@ sequence:
             metadata: {}
             data:
               option: reload
-      - conditions:
-          - condition: template
-            value_template: "{{ option == 'all' }}"
-        sequence:
-          - repeat:
-              for_each: |-
-                {{ states.binary_sensor  | 
-                selectattr('attributes.lastmod', 'defined') |
-                selectattr('state', 'eq', 'discovered') |
-                sort(attribute='attributes.lastmod') |
-                map(attribute='object_id') | list }}
-              sequence:
-                - variables:
-                    public_key: "{{ repeat.item[-20:-8] }}"
-                - action: meshcore.remove_discovered_contact
-                  data:
-                    pubkey_prefix: "{{ public_key }}"
-                  enabled: false
+            enabled: false
     default:
-      - stop: Created by WJ4IoT v1.01 new - added to clean discovered file.
+      - stop: Created by WJ4IoT v1.02 Reduced bulk action to core actions.
         enabled: false
 fields:
   option:
