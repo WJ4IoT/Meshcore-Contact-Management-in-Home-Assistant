@@ -119,55 +119,41 @@ sections:
         cards:
           - type: markdown
             content: >-
-
-              {% set type =
-              states['input_select.meshcore_contact_type'].state[:1] |  int(1)
-              %} 
-
-              {%- set days = states['input_number.meshcore_days_old'].state | 
-              int(0) %} {% set now = now() | as_timestamp | int %}  {%- set time
-              = now - days*24*60*60 %} 
+              {# Please Update your entity_id for Node count #}
 
               Node Count: {{
               states['sensor.meshcore_696e4b_node_count_wj_domusip'].state }}
 
               Added to Node - True: {{ states.binary_sensor |
-              selectattr('entity_id', 'contains', 'meshcore_') |
-              selectattr('entity_id', 'contains', '_contact') |
+              selectattr('attributes.lastmod', 'defined') |
               selectattr('attributes.added_to_node', 'true') | list | count }}
 
               Added to Node - False:  {{ states.binary_sensor |
-              selectattr('entity_id', 'contains', 'meshcore_') |
-              selectattr('entity_id', 'contains', '_contact') |
+              selectattr('attributes.lastmod', 'defined') |
               selectattr('attributes.added_to_node', 'false') | list | count }}
 
-              Favorite Flag: {{ states.binary_sensor | selectattr('entity_id',
-              'contains', 'meshcore_') | selectattr('entity_id', 'contains',
-              '_contact') | selectattr('attributes.flags', 'eq', 1 ) | list |
-              count }}
+              Favorite Flag: {{ states.binary_sensor |
+              selectattr('attributes.lastmod', 'defined') |
+              selectattr('attributes.flags', 'eq', 1 ) | list | count }}
           - type: markdown
             content: |-
               Status - Discovered: {{ states.binary_sensor
-              | selectattr('entity_id', 'contains', 'meshcore_')
-              | selectattr('entity_id', 'contains', '_contact')
+              | selectattr('attributes.lastmod', 'defined')
               | selectattr('state', 'eq', 'discovered')
               | list | count
               }}
               Status - Fresh: {{ states.binary_sensor
-              | selectattr('entity_id', 'contains', 'meshcore_')
-              | selectattr('entity_id', 'contains', '_contact')
+              | selectattr('attributes.lastmod', 'defined')
               | selectattr('state', 'eq', 'fresh')
               | list | count
               }}
               Status - Stale: {{ states.binary_sensor
-              | selectattr('entity_id', 'contains', 'meshcore_')
-              | selectattr('entity_id', 'contains', '_contact')
+              | selectattr('attributes.lastmod', 'defined')
               | selectattr('state', 'eq', 'stale')
               | list | count
               }}
               Status - Unavailable: {{ states.binary_sensor
-              | selectattr('entity_id', 'contains', 'meshcore_')
-              | selectattr('entity_id', 'contains', '_contact')
+              | selectattr('attributes.lastmod', 'defined')
               | selectattr('state', 'eq', 'unavailable')
               | list | count
               }}
@@ -339,5 +325,4 @@ sections:
         visibility:
           - condition: state
             state_not: ""
-visible: []
 cards: []
