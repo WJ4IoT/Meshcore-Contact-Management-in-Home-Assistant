@@ -1,0 +1,46 @@
+{# usage: {%- from 'bearing.jinja' import calc_bearing -%} {{- calc_bearing( lat, lon, option) -}} #}
+{# Option Values: #}
+{#  - 'D' output value Distance #}
+{#  - 'B' output value bearing #}
+{#  - 'C' output value compass direction like NW #}
+{#  - 'T' output tekt of all three in format: 89.8 km E 93.8° #}
+
+{%- macro calc_bearing(lat, lon, option) -%}
+{%- set target_lat = lat | float %} 
+{%- set target_lon = lon | float %} 
+{%- set current_lat = state_attr('zone.home', 'latitude') | float %} 
+{%- set current_lon = state_attr('zone.home', 'longitude') | float %}
+{%- set rad = 0.017453292519943295 %} 
+{%- set current_lat_rad= (current_lat * rad) | float %} 
+{%- set current_lon_rad= (current_lon * rad) | float %} 
+{%- set target_lat_rad= (target_lat * rad) | float %}
+{%- set target_lon_rad= (target_lon * rad) | float %} 
+{%- set delta_lat = (target_lat_rad - current_lat_rad) | float %}
+{%- set delta_lon= (target_lon_rad - current_lon_rad) | float -%}
+{%- set half_delta_lat = (delta_lat / 2.0) | float -%}
+{%- set half_delta_lon = (delta_lon / 2.0) | float -%} 
+{%- set sin_half_delta_lat = half_delta_lat | float | sin -%} 
+{%- set sin_half_delta_lon = half_delta_lon | float | sin  -%} 
+{%- set a = ((sin_half_delta_lat ** 2) + (cos(current_lat_rad) * cos(target_lat_rad) * (sin_half_delta_lon ** 2))) | float -%}
+{%- set c = (2.0 * atan2(sqrt(a), sqrt(1.0 - a))) | float -%} 
+{%- set dist = (c) * 6371.0 | float -%} 
+{%- set y = (sin(delta_lon) | float) * (cos(target_lat_rad) | float) -%}
+{%- set x = ( (cos(current_lat_rad) | float) * (sin(target_lat_rad) | float) - (sin(current_lat_rad) | float) * (cos(target_lat_rad) | float) * (cos(delta_lon) | float)) | float -%}
+{%- set bearing = ((atan2(y, x) * 57.2957795) + 360.0) % 360.0 | float -%} 
+{%- if bearing <= 22.5 %} {% set compass = 'N' -%}
+{%- elif bearing <= 67.5 %} {% set compass = 'NE' -%}
+{%- elif bearing <= 112.5 %} {% set compass = 'E' -%}
+{%- elif bearing <= 157.5 %} {% set compass = 'SE' -%}
+{%- elif bearing <= 202.5 %} {% set compass = 'S' -%}
+{%- elif bearing <= 247.5 %} {% set compass = 'SW' -%}
+{%- elif bearing <= 292.5 %} {% set compass = 'W' -%}
+{%- elif bearing <= 337.5 %} {% set compass = 'NW' -%}
+{%- else %} {% set compass = 'N' -%}  
+{%- endif -%}
+{%- if   option == 'D' -%} {{ dist | float(1) }}
+{%- elif option == 'B' -%} {{ bearing | float(1) }} 
+{%- elif option == 'C' -%} {{ bearing | float(1) }} 
+{%- elif option == 'T' -%} {{- dist | round(2) }} km {{ compass }} {{ bearing | round(1) -}}° 
+{%- else -%} error? 
+{%- endif -%}
+{%- endmacro -%}
