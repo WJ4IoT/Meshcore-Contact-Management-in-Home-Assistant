@@ -1,19 +1,23 @@
 # Meshcore Contact Management Dashboard in Home Assistant 
 A way to manage your contacts when using the Meshcore Integration. This was a slow-cooked 'noobish' development in the GUI so it is not a single package (but now only two files). This a revised version after many tweaking and re-tweaking. What can it do?
-* This dashboard is included the excellent manage contact card including:
+* This dashboard is included the excellent manage contact card extended with:
   * Toggle Favorite Flag of an added contact (now working, but response back to HA is not instant but takes times, much time but you can always check the trace in the script)
 * An Overview of the count of all contact and potential inactive contacts.
 * An overview of all important details of the contact in focus
   * Bij default the focus is on an added contact, if none is selected it will show the selected discovered contact.
-* Manage Contacts in BULK (NEW!!). Please tweak this to your own preferences BY DEFAULT most of these options are disabled.
-  * Last change is `⚠️ Remove Added Contacts from Discovered File`; this will reduce this file and avoid obsolete records will linger on. Also deleted two obsolete options.  * 
+* Manage Contacts in BULK. Please tweak this to your own preferences BY DEFAULT most of these options are disabled.
 
 ## 1. How does it look like?
+<img width="2246" height="1396" alt="image" src="https://github.com/user-attachments/assets/a3c9a278-93b2-4f4f-aed1-eda284ee2b2e" />
 
-<img width="1052" height="674" alt="image" src="https://github.com/user-attachments/assets/bda924f2-bcf1-4eeb-8f55-73e8b8d25bc2" />
 
 Some parts explained:
-* The `Manage Contact (Overview)` card gives information of the contacts in Home Assistant and on your node. With the fix setting for companions 3 days old and 7 for others (feel free to change this preference).
+* The badges on the top needs to be updated to your entities.
+* The `Manage Contact (Overview)` has now a batch look.
+   1. Home Assistant counts
+   2. Home Assistant counts of the status (if unavailable <> 0 do appropiate bulk action)
+   3. Home Assistant counts of potential obsolete contacts (with the fix setting for companions 3 days old and 7 for others (feel free to change this preference).
+   4. Device details
 * The +1 difference between `node count` and `Added to Node - True` seems a small mistake, so expect this difference. If this section is blank you might need still to change the entity_id to your own node.
 * The `manage Contacts (BULK)` is in potential destructive, to make sure you understand what will happen essential parts of the script are disabled, Other safe cards are days should be given and cannot be lower than a certain threshold (again feel free to change this preference). The `🔄 Reload Meshcore Device` needs to refer to the `device_id` of your node, easiest way to find this unlogical number is in a new automation. Until you do this expect the error `Failed to perform the action homeassistant/reload_config_entry. There were no matching config entries to reload`.
  * My own preference days old for adverts are: 7 days for companions, 3 days for others for the Discovered Contacts, 7 days for all added contacts on node.
@@ -26,8 +30,10 @@ Some parts explained:
 ## 2. Requirements
 * Mescore Integration Version v2.2.3.
 * HACS Repository: Mushroom
-* [The New script file](https://github.com/WJ4IoT/Meshcore-Home-Assistant-Solutions/blob/main/scripts/meshcore_contact_management.yaml)
+* HACS Repository: badge-horizontal-container-card (NEW!)
+* [The script file](https://github.com/WJ4IoT/Meshcore-Home-Assistant-Solutions/blob/main/scripts/meshcore_contact_management.yaml)
 * The Revised Maintenance [Dashboard](https://github.com/WJ4IoT/Meshcore-Home-Assistant-Solutions/blob/main/dashboards/mc_contacts.yaml)
+* The custom template to calculate and format [bearing](https://github.com/WJ4IoT/Meshcore-Home-Assistant-Solutions/blob/main/custom_templates/bearing.jinja) (NEW!)
 
 ## 3. Tweaking Essential
 You must tweak these files for your personnal needs:
@@ -78,6 +84,7 @@ These safe-guards are built in because when run it the job is done and most like
               pubkey_prefix: "{{ public_key }}"
             enabled: false
 ```
-## 4. Changes
+## 4. Most Important Changes in v1.0....:
 1. Toggle Favorite added to Individual Manage Contact Card
 2. Remove two bulk options, corrected an small error in script and hopefully improved documentation
+3. Introducing horizonal badges card and moving bearing calculation to a custom template
