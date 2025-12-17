@@ -6,13 +6,16 @@ Do not expect fancy single packages or blueprints. In the end they are not rocke
 
 Enough blah blah, My first two solutions were:
 
-* [Contact Management](Contact_Management.md): using the standard card with some additional flavor like toggle Favorite, additional info and BULK mutations and contacts overview.
+* [Contact Management](Contact_Management.md): using the standard card with some additional flavor like toggle Favorite, additional info, BULK mutations and contacts overview.
 * [Reply to the Correct Channel.md](Reply_in_the_Correct_Channel.md): A pretty simple way to avoid you reply in the wrong channel (now including with a DM-card)
+* UPCOMMING sort of dashboard with running incomming Advert and SNR details (including graph)
 
-Maybe more will follow, you will see them in the overview
+These 3 are the major dashboards I am using myself and on my node I hardly add any contact.
 
 *sharing is caring*
 
 A thought of consideration: The Meshcore integration is re-introducing automated telemetry into the game. The abundancy of this is one of the flaws of Meshtastic. Please make the interval as long as possible and avoid going below 900 seconds (perhaps 1800 is more than sufficient). Another example: An advert of your companion is mostly forgotten in the normal situation so 1 daily advert might be more than sufficient.
 
-It is easy to create a push- or a pull-BOT but maybe it is a good idea to refrain from doing this. who is waiting for your weather forecast (have we not learned from Meshtastic)?
+It is VERY easy to create a push- or a pull-BOT but maybe it is a good idea to refrain from doing this. who is waiting for BOT saying hello every morning (have we not learned from Meshtastic)?
+
+*I do not drink coffee so no need to support me in this way, but a star is appriated and is for me a good indication if I should continue to make the effort for uploading.*
