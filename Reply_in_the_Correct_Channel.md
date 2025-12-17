@@ -4,9 +4,7 @@ If you ever did (I did!) these card(s) will avoid this.
 
 ## How can it look like?
 
-![msg](https://github.com/user-attachments/assets/5ea15d88-b26c-4f6a-9f2f-ee7e8dcf32d0)
-
-
+![msg](https://github.com/user-attachments/assets/d885b0ed-ff24-44f2-966f-c6e0708d5fdf)
 
 ## What do you need to do?
 Easy it just work together with the official `messaging card` and set the focus on the same channel as this `messaging card`. This will prevent a reply in the wrong channel.
