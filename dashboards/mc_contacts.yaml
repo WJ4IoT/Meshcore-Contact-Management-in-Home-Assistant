@@ -1,162 +1,203 @@
 type: sections
 max_columns: 4
-title: MC Contacts
+title: MC ⛑️
 path: meshcore_contacts
 sections:
   - type: grid
     cards:
       - type: markdown
-        title: Manage Contacts (Overview)
         content: |-
-          {%- set now = now() | as_timestamp | int -%}  
-          {%- set time  = now - 3*24*60*60 -%}
-          {%- set timeC = now - 7*24*60*60 -%} 
-          {{ states.binary_sensor
-            | selectattr('attributes.last_advert', 'defined')
-            | list
-            | count
+          ## Manage Contacts (Overview)
+          {# 
+          - read RTFM
+          - change standard badges to your MC entities
+          - change device ID in Reload Meshcore Device
+          More info: https://github.com/WJ4IoT/Meshcore-Home-Assistant-Solutions
 
-            }} Contacts (on node: {{ states.binary_sensor
-            | selectattr('attributes.last_advert', 'defined')
-            | selectattr('attributes.added_to_node', 'true')
-            | list
-            | count }} - fav: {{ states.binary_sensor
-            | selectattr('attributes.last_advert', 'defined')
-            | selectattr('attributes.flags', 'eq', 1)
-            | list
-            | count}})
-            
-          {{ states.binary_sensor
-            | selectattr('attributes.last_advert', 'defined')
-            | selectattr('attributes.type', 'eq', 1 )
-            | list
-            | count 
-            }} Companions (IA?: {{ states.binary_sensor
-            | selectattr('attributes.last_advert', 'defined')
-            | selectattr('attributes.type', 'eq', 1 )
-            | selectattr('attributes.lastmod','lt', timeC )
-            | list
-            | count
-            
-            }}) (on node: {{ states.binary_sensor
-            | selectattr('attributes.last_advert', 'defined')
-            | selectattr('attributes.type', 'eq', 1 )
-            | selectattr('attributes.added_to_node', 'true')
-            | list
-            | count }} - fav: {{ states.binary_sensor
-            | selectattr('attributes.last_advert', 'defined')
-            | selectattr('attributes.flags', 'eq', 1)
-            | selectattr('attributes.type', 'eq', 1 )
-            | list
-            | count 
-            }} - IA?: {{ states.binary_sensor
-            | selectattr('attributes.last_advert', 'defined')
-            | selectattr('attributes.type', 'eq',1 )
-            | selectattr('attributes.added_to_node', 'true')
-            | selectattr('attributes.lastmod','lt', timeC )
-            | list
-            | count }})
-          {{ states.binary_sensor
-            | selectattr('attributes.last_advert', 'defined')
-            | selectattr('attributes.type', 'eq', 2 )
-            | list
-            | count 
-            }} Repeaters (IA?: {{ states.binary_sensor
-            | selectattr('attributes.last_advert', 'defined')
-            | selectattr('attributes.lastmod','lt', time )
-            | selectattr('attributes.type', 'eq', 2 )
-            | list
-            | count  
-            }}) (on node: {{ states.binary_sensor
-            | selectattr('attributes.last_advert', 'defined')
-            | selectattr('attributes.type', 'eq', 2 )
-            | selectattr('attributes.added_to_node', 'true')
-            | list
-            | count }} - fav: {{ states.binary_sensor
-            | selectattr('attributes.last_advert', 'defined')
-            | selectattr('attributes.flags', 'eq', 1)
-            | selectattr('attributes.type', 'eq', 2 )
-            | list
-            | count }}  - IA?: {{ states.binary_sensor
-            | selectattr('attributes.last_advert', 'defined')
-            | selectattr('attributes.type', 'eq', 2)
-            | selectattr('attributes.added_to_node', 'true')
-            | selectattr('attributes.lastmod','lt', time )
-            | list
-            | count }})
-          {{ states.binary_sensor
-            | selectattr('attributes.last_advert', 'defined')
-            | selectattr('attributes.type', 'eq', 3 )
-            | list
-            | count  
-            }} Room Servers (IA?: {{ states.binary_sensor
-            | selectattr('attributes.last_advert', 'defined')
-            | selectattr('attributes.lastmod','lt', time )
-            | selectattr('attributes.type', 'eq', 3 )
-            | list
-            | count  
-            }}) (on node: {{ states.binary_sensor
-            | selectattr('attributes.last_advert', 'defined')
-            | selectattr('attributes.type', 'eq', 3 )
-            | selectattr('attributes.added_to_node', 'true')
-            | list
-            | count }} - fav: {{ states.binary_sensor
-            | selectattr('attributes.last_advert', 'defined')
-            | selectattr('attributes.flags', 'eq', 1)
-            | selectattr('attributes.type', 'eq', 3 )
-            | list
-            | count }} - IA?: {{ states.binary_sensor
-            | selectattr('attributes.last_advert', 'defined')
-            | selectattr('attributes.type', 'eq', 3 )
-            | selectattr('attributes.added_to_node', 'true')
-            | selectattr('attributes.lastmod','lt', time )
-            | list
-            | count }})
+          Version: v1.03
+          created & gathered together by WJ4IoT
+          #}
         grid_options:
           columns: 12
           rows: auto
-      - type: horizontal-stack
-        cards:
-          - type: markdown
+      - type: custom:badge-horizontal-container-card
+        badges:
+          - type: custom:mushroom-template-badge
+            icon: mdi:home-assistant
+            color: blue
+          - type: custom:mushroom-template-badge
             content: >-
-              {# Please Update your entity_id for Node count #}
-
-              Node Count: {{
-              states['sensor.meshcore_696e4b_node_count_wj_domusip'].state }}
-
-              Added to Node - True: {{ states.binary_sensor |
-              selectattr('attributes.lastmod', 'defined') |
-              selectattr('attributes.added_to_node', 'true') | list | count }}
-
-              Added to Node - False:  {{ states.binary_sensor |
-              selectattr('attributes.lastmod', 'defined') |
-              selectattr('attributes.added_to_node', 'false') | list | count }}
-
-              Favorite Flag: {{ states.binary_sensor |
-              selectattr('attributes.lastmod', 'defined') |
-              selectattr('attributes.flags', 'eq', 1 ) | list | count }}
-          - type: markdown
-            content: |-
-              Status - Discovered: {{ states.binary_sensor
-              | selectattr('attributes.lastmod', 'defined')
-              | selectattr('state', 'eq', 'discovered')
-              | list | count
+              {{ states.binary_sensor  | selectattr('attributes.lastmod',
+              'defined') | list | count }}
+            icon: mdi:account-group
+            color: blue
+          - type: custom:mushroom-template-badge
+            content: >-
+              {{ states.binary_sensor  | selectattr('attributes.lastmod',
+              'defined') | selectattr('attributes.type', 'eq', 1) |      list |
+              count }}
+            icon: mdi:account
+            color: blue
+          - type: custom:mushroom-template-badge
+            content: >-
+              {{ states.binary_sensor   | selectattr('attributes.lastmod',
+              'defined')  | selectattr('attributes.type', 'eq', 2) |list | count
               }}
-              Status - Fresh: {{ states.binary_sensor
-              | selectattr('attributes.lastmod', 'defined')
-              | selectattr('state', 'eq', 'fresh')
-              | list | count
+            icon: mdi:radio-tower
+            color: blue
+          - type: custom:mushroom-template-badge
+            content: >-
+              {{ states.binary_sensor   | selectattr('attributes.lastmod',
+              'defined')  | selectattr('attributes.type', 'eq', 3) |list | count
               }}
-              Status - Stale: {{ states.binary_sensor
-              | selectattr('attributes.lastmod', 'defined')
-              | selectattr('state', 'eq', 'stale')
-              | list | count
-              }}
-              Status - Unavailable: {{ states.binary_sensor
-              | selectattr('attributes.lastmod', 'defined')
-              | selectattr('state', 'eq', 'unavailable')
-              | list | count
-              }}
+            icon: mdi:forum
+            color: blue
+          - type: custom:mushroom-template-badge
+            content: >-
+              {{ states.binary_sensor  | selectattr('attributes.lastmod',
+              'defined')  | selectattr('attributes.adv_lat', 'ne', 0 )  | list |
+              count }}
+            icon: mdi:globe-model
+            color: blue
+          - type: custom:mushroom-template-badge
+            content: >-
+              {{ states.binary_sensor  | selectattr('attributes.lastmod',
+              'defined')  | selectattr('attributes.flags', 'eq', 1 )  | list |
+              count }}
+            icon: mdi:flag
+            color: blue
+        badges_align: left
+        badges_wrap: scroll
+      - type: custom:badge-horizontal-container-card
+        badges:
+          - type: custom:mushroom-template-badge
+            content: Status
+            icon: mdi:home-assistant
+            color: white
+          - type: custom:mushroom-template-badge
+            content: >-
+              {{ states.binary_sensor  | selectattr('attributes.lastmod',
+              'defined') | selectattr('state', 'eq', 'discovered') | list |
+              count }} disc
+            icon: mdi:account-group
+            color: white
+          - type: custom:mushroom-template-badge
+            content: >-
+              {{ states.binary_sensor  | selectattr('attributes.lastmod',
+              'defined') | selectattr('state', 'eq', 'fresh') | list | count }}
+              fresh
+            icon: mdi:account-group
+            color: green
+          - type: custom:mushroom-template-badge
+            content: >-
+              {{ states.binary_sensor  | selectattr('attributes.lastmod',
+              'defined') | selectattr('state', 'eq', 'stale') | list | count }}
+              stale
+            icon: mdi:account-group
+            color: orange
+          - type: custom:mushroom-template-badge
+            content: >-
+              {{ states.binary_sensor  | selectattr('attributes.lastmod',
+              'defined') | selectattr('state', 'eq', 'unavailable') | list |
+              count }} unavailable
+            icon: mdi:account-group
+            color: red
+        badges_align: left
+        badges_wrap: scroll
+      - type: custom:badge-horizontal-container-card
+        badges:
+          - type: custom:mushroom-template-badge
+            content: Inactive?
+            icon: mdi:home-assistant
+            color: red
+          - type: custom:mushroom-template-badge
+            content: >-
+              {# set your own preferences #}  {% set now = now() | as_timestamp
+              | int -%} {%- set time  = now - 3*24*60*60 -%}  {{
+              states.binary_sensor  | selectattr('attributes.lastmod',
+              'defined') |  selectattr('attributes.lastmod','lt', time ) | list
+              | count }} ?
+            icon: mdi:account-group
+            color: red
+          - type: custom:mushroom-template-badge
+            content: >-
+              {# set your own preferences #}  {% set now = now() | as_timestamp
+              | int -%} {%- set time  = now - 7*24*60*60 -%}  {{
+              states.binary_sensor  | selectattr('attributes.lastmod',
+              'defined') | selectattr('attributes.lastmod','lt', time ) |
+              selectattr('attributes.type', 'eq', 1) |      list | count }}
+            icon: mdi:account
+            color: red
+          - type: custom:mushroom-template-badge
+            content: >-
+              {# set your own preferences #}  {% set now = now() | as_timestamp
+              | int -%} {%- set time  = now - 3*24*60*60 -%}  {{
+              states.binary_sensor   | selectattr('attributes.lastmod',
+              'defined')  | selectattr('attributes.lastmod','lt', time ) |
+              selectattr('attributes.type', 'eq', 2) |list | count }}
+            icon: mdi:radio-tower
+            color: red
+          - type: custom:mushroom-template-badge
+            content: >-
+              {# set your own preferences #}  {% set now = now() | as_timestamp
+              | int -%} {%- set time  = now - 3*24*60*60 -%}  {{
+              states.binary_sensor | selectattr('attributes.lastmod', 'defined')
+              | selectattr('attributes.lastmod','lt', time ) |
+              selectattr('attributes.type', 'eq', 3) | list | count }}
+            icon: mdi:forum
+            color: red
+        badges_align: left
+        badges_wrap: scroll
+      - type: custom:badge-horizontal-container-card
+        badges:
+          - type: custom:mushroom-template-badge
+            icon: mdi:radio-handheld
+            color: blue
+          - type: custom:mushroom-template-badge
+            content: >-
+              {{ states.binary_sensor  | selectattr('attributes.lastmod',
+              'defined') | selectattr('attributes.added_to_node', 'true') | list
+              | count }}
+            icon: mdi:account-group
+            color: blue
+          - type: custom:mushroom-template-badge
+            content: >-
+              {{ states.binary_sensor  | selectattr('attributes.lastmod',
+              'defined') |
+                selectattr('attributes.added_to_node', 'true')| selectattr('attributes.type',
+              'eq', 1) |      list | count }}
+            icon: mdi:account
+            color: blue
+          - type: custom:mushroom-template-badge
+            content: >-
+              {{ states.binary_sensor   | selectattr('attributes.lastmod',
+              'defined')  | selectattr('attributes.added_to_node', 'true') |
+              selectattr('attributes.type', 'eq', 2) |list | count }}
+            icon: mdi:radio-tower
+            color: blue
+          - type: custom:mushroom-template-badge
+            content: >-
+              {{ states.binary_sensor   | selectattr('attributes.lastmod',
+              'defined')  | selectattr('attributes.added_to_node', 'true') |
+              selectattr('attributes.type', 'eq', 3) |list | count }}
+            icon: mdi:forum
+            color: blue
+          - type: custom:mushroom-template-badge
+            content: >-
+              {{ states.binary_sensor  | selectattr('attributes.lastmod',
+              'defined')  | selectattr('attributes.added_to_node', 'true') |
+              selectattr('attributes.adv_lat', 'ne', 0 )  | list | count }}
+            icon: mdi:globe-model
+            color: blue
+          - type: custom:mushroom-template-badge
+            content: >-
+              {{ states.binary_sensor  | selectattr('attributes.lastmod',
+              'defined')  | selectattr('attributes.added_to_node', 'true') |
+              selectattr('attributes.flags', 'eq', 1 )  | list | count }}
+            icon: mdi:flag
+            color: blue
+        badges_align: left
+        badges_wrap: scroll
       - type: entities
         title: Manage Contacts (BULK)
         entities:
@@ -167,7 +208,7 @@ sections:
               action: call-service
               service: homeassistant.reload_config_entry
               data:
-                device_id: 97b090d2c09320ecc86f3f564e55345d
+                device_id: 384066b87fc8947db720c5e54ae6ed14
           - type: button
             name: 🧹 Cleanup Unavailable Contacts
             action_name: Cleanup
@@ -274,49 +315,23 @@ sections:
               timestamp_custom('%Y-%m-%d %H:%M')}} 
 
               Last Mod : {{ states[id].attributes.lastmod | int
-              |timestamp_custom('%Y-%m-%d %H:%M')}}
+              |timestamp_custom('%Y-%m-%d %H:%M')}} 
 
-              {% set lat = states[id].attributes.adv_lat -%} {%- set lon =
-              states[id].attributes.adv_lon -%} {%- set current_lat =
-              state_attr('zone.home', 'latitude') | float -%} {%- set
-              current_lon =  state_attr('zone.home', 'longitude') | float -%}
-              {%- set target_lat =  lat | float -%} {%- set target_lon =  lon |
-              float -%} {%- set rad = 0.017453292519943295 -%} {%- set
-              current_lat_rad= (current_lat * rad) | float -%} {%- set
-              current_lon_rad= (current_lon * rad) | float -%} {%- set
-              target_lat_rad= (target_lat * rad) | float -%} {%- set
-              target_lon_rad= (target_lon * rad) | float -%} {%- set delta_lat =
-              (target_lat_rad - current_lat_rad) | float -%} {%- set delta_lon=
-              (target_lon_rad - current_lon_rad) | float -%} {%- set
-              half_delta_lat = (delta_lat / 2.0) | float -%} {%- set
-              half_delta_lon = (delta_lon / 2.0) | float -%} {%- set
-              sin_half_delta_lat = half_delta_lat | float | sin -%} {%- set
-              sin_half_delta_lon = half_delta_lon | float | sin  -%} {%- set a =
-              ((sin_half_delta_lat ** 2) + (cos(current_lat_rad) *
-                  cos(target_lat_rad) * (sin_half_delta_lon ** 2))) | float -%}
-              {%- set c = (2.0 * atan2(sqrt(a), sqrt(1.0 - a))) | float -%} {%-
-              set dist = (c) * 6371.0 | round(1) -%} {%- set y = (sin(delta_lon)
-              | float) * (cos(target_lat_rad) | float) -%} {%- set x = (
-              (cos(current_lat_rad) | float) * (sin(target_lat_rad) | float) -
-              (sin(current_lat_rad) | float) * (cos(target_lat_rad) | float) *
-                            (cos(delta_lon) | float)) | float -%}
-              {% set bearing = ((atan2(y, x) * 57.2957795) + 360.0) % 360.0 |
-              round(1)      %} Distance :  {{ dist | round(2) }} km, bearing:
-              {%- if bearing <= 22.5 %} N {%- elif bearing <= 67.5 %} NE  {%-
-              elif bearing <= 112.5 %} E  {%- elif bearing <= 157.5 %} SE  {%-
-              elif bearing <= 202.5 %} S  {%- elif bearing <= 247.5 %} SW {%-
-              elif bearing <= 292.5 %} W {%- elif bearing <= 337.5 %} NW {%-
-              else -%}  N  {%- endif %} {{ bearing | round(1)}}°
+              {# removed next section if not using #} Afstand: {%- set lat =
+              states[id].attributes.adv_lat -%} {%- set lon =
+              states[id].attributes.adv_lon -%} {%- from 'bearing.jinja' import
+              calc_bearing -%} {{- calc_bearing( lat, lon, 'T') -}}      {#- end
+              section -#}
 
-              {%- set hops = 'sensor.meshcore_'~public_key~'_hops' -%} 
+              {# removed below section if not using #} {%- set hops =
+              'sensor.meshcore_advert_'~public_key -%} 
 
-              {%- if states[hops].state is defined %} 
-
-              Advert Details: Hops: {{states[hops].attributes.hops}} Path:
+              {%- if states[hops].state is defined %} {%- if
+              states[hops].attributes.interval is defined %}  Advert Details:
+              Hops: {{states[hops].attributes.hops}} Path:
               {{states[hops].attributes.path}} Interval:
-              {{states[hops].attributes.interval}} uur 
-
-              {% endif %} 
+              {{states[hops].attributes.interval}} min  {% endif %} {% endif %}
+              {# end section #}
 
               {%- endfor -%}
         grid_options:
@@ -326,3 +341,30 @@ sections:
           - condition: state
             state_not: ""
 cards: []
+badges:
+  - type: entity
+    entity: sensor.meshcore_ab389b_node_status_wj_serial
+    show_name: false
+  - type: entity
+    entity: sensor.meshcore_ab389b_battery_percentage_wj_serial
+    name: Battery
+  - type: entity
+    entity: sensor.meshcore_ab389b_battery_voltage_wj_serial
+    name: Volts
+  - type: entity
+    entity: sensor.meshcore_ab389b_frequency_wj_serial
+    name: Freq
+  - type: entity
+    entity: sensor.meshcore_ab389b_tx_power_wj_serial
+    name: TX
+    icon: mdi:antenna
+  - type: entity
+    entity: sensor.meshcore_ab389b_spreading_factor_wj_serial
+    name: SF
+    icon: mdi:video-input-antenna
+  - type: entity
+    show_name: false
+    show_state: true
+    show_icon: true
+    entity: sensor.meshcore_ab389b_node_count_wj_serial
+    name: Nodes
