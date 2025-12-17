@@ -1,0 +1,17 @@
+{%- macro format_path(hops, path) -%}
+{# 
+usage: {% from 'formatter.jinja' import format_path -%} {{ format_path(hops, path_in ) }} 
+created by: WJ4IoT, december 2025
+#}
+
+{%- if hops > 0 -%}
+    {%- set ns = namespace(s='') -%}
+    {%- for i in range(hops) -%}
+    {%- set b = path[i*2 : i*2 + 2] -%}
+    {%- set ns.s = ns.s + (('->' if ns.s else '') + b) -%}
+    {%- endfor -%}
+    {{ ns.s }}
+{%- else -%}
+    DM
+{%- endif -%}
+{%- endmacro -%}
