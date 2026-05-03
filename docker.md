@@ -88,4 +88,4 @@ wget -O mctomqtt-config/config.d/99-user.toml https://raw.githubusercontent.com/
 # copy your 99-user.toml to folder: mctomqtt-config/config.d
 wget -O mctomqtt-config/config.d/letsmesh.toml https://raw.githubusercontent.com/Cisien/meshcoretomqtt/refs/heads/main/presets/letsmesh.toml
 ```
-The maximun number of MQTT servers is 4 (?)
+The maximum number of MQTT servers is 4 (?)
