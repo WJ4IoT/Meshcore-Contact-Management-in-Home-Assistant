@@ -1,5 +1,5 @@
 # How to setup MeshcoretoMQTT using docker 
-These instructions are tested on Ubuntu Server.
+These instructions are tested on an Ubuntu Server.
 
 ## 1. Create base folder and subfolders for configuration
 
@@ -70,16 +70,17 @@ Do not forget to change this in your user TOML file.
 wget -O mctomqtt-config/config.toml https://raw.githubusercontent.com/Cisien/meshcoretomqtt/refs/heads/main/config.toml.example
 ```
 
-## 4. Create user TOML-files in folder: 'mctomqtt-config/config.d'
-
-An user toml file needs to be created with your specific settings and local MQTT-servers, you may separate this in two files. The standard name for this file is [99-user.toml](https://github.com/WJ4IoT/Meshcore-Observer-Installation/blob/main/99-user.toml)
+## 4. Create user TOML-file
+An user toml file needs to be created with your specific settings and local MQTT-broker(s), you may separate this in two files. The standard name for this file is [99-user.toml](https://github.com/WJ4IoT/Meshcore-Observer-Installation/blob/main/99-user.toml). This file must be in folder 'mctomqtt-config/config.d'.
 
 ```bash
-# copy an 99-user.toml to folder: mctomqtt-config/config.d (use your own settings)
+# copy an 99-user.toml to folder: mctomqtt-config/config.d
 wget -O mctomqtt-config/config.d/99-user.toml https://raw.githubusercontent.com/WJ4IoT/Meshcore-Observer-Installation/refs/heads/main/99-user.toml
 ```
+And update with your details
 
-## 5. There are some preset TOML files external MQTT servers to copy to folder: 'mctomqtt-config/config.d'
+## 5. External MQTT-broker 
+There are some preset TOML files external MQTT-brokers, these files need also to be copies to folder 'mctomqtt-config/config.d'.
 
 ```bash
 # example letsmesh eu & us
