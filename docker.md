@@ -72,10 +72,7 @@ wget -O mctomqtt-config/config.toml https://raw.githubusercontent.com/Cisien/mes
 
 ## 4. Create user TOML-files in folder: 'mctomqtt-config/config.d'
 
-An user toml file needs to create with your specific settings and local MQTT-servers, you may separate this in two files. 
-
-
-[99-user.toml](https://github.com/WJ4IoT/Meshcore-Observer-Installation/blob/main/99-user.toml)
+An user toml file needs to be created with your specific settings and local MQTT-servers, you may separate this in two files. The standard name for this file is [99-user.toml](https://github.com/WJ4IoT/Meshcore-Observer-Installation/blob/main/99-user.toml)
 
 ```bash
 # copy an 99-user.toml to folder: mctomqtt-config/config.d (use your own settings)
@@ -85,7 +82,12 @@ wget -O mctomqtt-config/config.d/99-user.toml https://raw.githubusercontent.com/
 ## 5. There are some preset TOML files external MQTT servers to copy to folder: 'mctomqtt-config/config.d'
 
 ```bash
-# copy your 99-user.toml to folder: mctomqtt-config/config.d
+# example letsmesh eu & us
 wget -O mctomqtt-config/config.d/letsmesh.toml https://raw.githubusercontent.com/Cisien/meshcoretomqtt/refs/heads/main/presets/letsmesh.toml
+```
+
+```bash
+# example conrmeister.nl
+wget -O mctomqtt-config/config.d/letsmesh.toml https://raw.githubusercontent.com/WJ4IoT/Meshcore-Observer-Docker-Installation-Instructions/refs/heads/main/cornmeister-nl.toml
 ```
 The maximum number of MQTT servers is 4 (?)
